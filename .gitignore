@@ -7,3 +7,5 @@ tsconfig.tsbuildinfo
 prisma/migrations/*.db
 *.db
 *.sqlite
+
+.vercel
