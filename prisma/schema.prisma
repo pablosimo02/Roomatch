@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  name              String
+  avatar            String?
+  university        String?
+  verified          Boolean   @default(false)
+  verificationBadge String?   // "student" | "landlord" | "erasmus"
+  bio               String?
+  instagramHandle   String?
+  budget            Int?
+  lookingFor        String?   // "room" | "flat" | "roommate"
+  smoker            Boolean   @default(false)
+  hasPets           Boolean   @default(false)
+  sleepSchedule     String?   // "early" | "late" | "flexible"
+  studyHabits       String?   // "quiet" | "social" | "mixed"
+  cleanlinessLevel  Int?      // 1-5
+  languages         String[]
+  interests         String[]
+  ecoScore          Int?      // 0-100
+  reputationScore   Float     @default(0)
+  isPremium         Boolean   @default(false)
+  role              String    @default("student") // "student" | "landlord" | "admin"
+  createdAt         DateTime  @default(now())
+
+  listings          Listing[]
+  sentMessages      Message[]         @relation("SentMessages")
+  receivedMessages  Message[]         @relation("ReceivedMessages")
+  swipesGiven       Swipe[]           @relation("SwipeFrom")
+  swipesReceived    Swipe[]           @relation("SwipeTo")
+  matches           Match[]           @relation("MatchUser1")
+  matchedWith       Match[]           @relation("MatchUser2")
+  reviews           Review[]          @relation("ReviewsGiven")
+  reviewsReceived   Review[]          @relation("ReviewsReceived")
+  followers         Follow[]          @relation("Followers")
+  following         Follow[]          @relation("Following")
+}
+
+model Listing {
+  id              String    @id @default(cuid())
+  title           String
+  description     String
+  type            String    // "room" | "flat" | "studio"
+  price           Int
+  size            Int?      // m²
+  address         String
+  neighborhood    String
+  city            String    @default("Valencia")
+  lat             Float
+  lng             Float
+  images          String[]
+  amenities       String[]
+  rules           String[]
+  availableFrom   DateTime
+  isFurnished     Boolean   @default(true)
+  billsIncluded   Boolean   @default(false)
+  petsAllowed     Boolean   @default(false)
+  smokingAllowed  Boolean   @default(false)
+  ecoScore        Int?      // 0-100 calculado automáticamente
+  energyRating    String?   // "A" | "B" | "C" | "D" | "E"
+  co2Estimate     Float?    // kg CO2/mes estimado
+  distanceUV      Float?    // km a Universidad de Valencia
+  distanceUPV     Float?    // km a UPV
+  publicTransport String[]  // líneas de metro/bus cercanas
+  fraudScore      Float     @default(0)
+  isVerified      Boolean   @default(false)
+  isActive        Boolean   @default(true)
+  views           Int       @default(0)
+  ownerId         String
+  owner           User      @relation(fields: [ownerId], references: [id])
+  createdAt       DateTime  @default(now())
+
+  swipes          Swipe[]
+  reviews         Review[]
+}
+
+model Swipe {
+  id         String   @id @default(cuid())
+  userId     String
+  listingId  String?
+  targetId   String?  // para swipe de roommates
+  direction  String   // "like" | "dislike" | "superlike"
+  createdAt  DateTime @default(now())
+
+  user       User     @relation("SwipeFrom", fields: [userId], references: [id])
+  listing    Listing? @relation(fields: [listingId], references: [id])
+  target     User?    @relation("SwipeTo", fields: [targetId], references: [id])
+}
+
+model Match {
+  id        String    @id @default(cuid())
+  user1Id   String
+  user2Id   String
+  type      String    // "roommate" | "listing"
+  score     Float     // compatibilidad 0-100
+  createdAt DateTime  @default(now())
+
+  user1     User      @relation("MatchUser1", fields: [user1Id], references: [id])
+  user2     User      @relation("MatchUser2", fields: [user2Id], references: [id])
+  messages  Message[]
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  content    String
+  type       String   @default("text") // "text" | "image" | "system"
+  senderId   String
+  receiverId String
+  matchId    String?
+  read       Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  match      Match?   @relation(fields: [matchId], references: [id])
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  score      Int      // 1-5
+  comment    String
+  authorId   String
+  targetId   String?
+  listingId  String?
+  createdAt  DateTime @default(now())
+
+  author     User     @relation("ReviewsGiven", fields: [authorId], references: [id])
+  target     User?    @relation("ReviewsReceived", fields: [targetId], references: [id])
+  listing    Listing? @relation(fields: [listingId], references: [id])
+}
+
+model Follow {
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower    User     @relation("Following", fields: [followerId], references: [id])
+  following   User     @relation("Followers", fields: [followingId], references: [id])
+
+  @@id([followerId, followingId])
+}
