@@ -34,7 +34,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
   const { toggleFavorite, isFavorite } = useFavorites();
   const favorited = isFavorite(listing.id);
   const [imgError, setImgError] = React.useState(false);
-  const imageSrc = listing.images && listing.images.length > 0 && !imgError ? listing.images[0] : 'https://images.unsplash.com/photo-1522708323594-d2f6ca577e8d?w=800&q=80';
+  const imageSrc = listing.images && listing.images.length > 0 && !imgError ? listing.images[0] : 'https://picsum.photos/seed/fallback/800/600';
 
   return (
     <Link href={`/listing/${listing.id}`} className="block">

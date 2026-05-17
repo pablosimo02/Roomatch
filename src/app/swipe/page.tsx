@@ -63,7 +63,7 @@ export default function SwipePage() {
             }}
             className="absolute inset-0 rounded-3xl overflow-hidden bg-white/5 border border-white/10 cursor-grab active:cursor-grabbing"
           >
-            <img src={currentListing.images[0] || 'https://images.unsplash.com/photo-1522708323594-d2f6ca577e8d?w=800&q=80'} alt={currentListing.title} className="w-full h-full object-cover" />
+            <img src={currentListing.images[0] || 'https://picsum.photos/seed/fallback/800/600'} alt={currentListing.title} className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-6">
               <div className="flex justify-between items-start mb-2">

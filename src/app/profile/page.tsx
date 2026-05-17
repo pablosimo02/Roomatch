@@ -4,7 +4,7 @@ import ProfileHeader from '@/components/profile/ProfileHeader';
 const MOCK_USER = {
   name: 'Pablo UV',
   university: 'Universidad de Valencia',
-  avatar: 'https://images.unsplash.com/photo-1539571696312-3a504420d4b2',
+  avatar: 'https://picsum.photos/seed/fallback/800/600',
   reputation: 98,
   ecoScore: 85,
   badges: ['Verificado', 'Eco-Friendly', 'Top Roommate'],

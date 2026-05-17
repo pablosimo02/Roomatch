@@ -54,7 +54,7 @@ export default function RoommatesPage() {
             exit={{ x: direction === 'right' ? 500 : -500, opacity: 0, rotate: direction === 'right' ? 20 : -20, transition: { duration: 0.3 } }}
             className="absolute inset-0 rounded-3xl overflow-hidden bg-white/5 border border-white/10"
           >
-            <img src={currentUser.avatar || 'https://images.unsplash.com/photo-1539571696312-3a504420d4b2?w=800&q=80'} alt={currentUser.name} className="w-full h-3/5 object-cover" />
+            <img src={currentUser.avatar || 'https://picsum.photos/seed/fallback/800/600'} alt={currentUser.name} className="w-full h-3/5 object-cover" />
             <div className="p-6 flex flex-col gap-3">
               <div className="flex justify-between items-start">
                 <div>

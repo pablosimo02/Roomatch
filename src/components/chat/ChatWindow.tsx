@@ -74,7 +74,7 @@ export default function ChatWindow({ userId }: { userId: string }) {
       <div className="p-4 border-b border-white/10 flex items-center justify-between backdrop-blur-md bg-white/5">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-primary/20 overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1539571696312-3a504420d4b2" className="w-full h-full object-cover" alt="User" />
+            <img src="https://picsum.photos/seed/fallback/800/600" className="w-full h-full object-cover" alt="User" />
           </div>
           <div className="flex flex-col">
             <h3 className="font-bold text-sm">Pablo UV</h3>

@@ -6,21 +6,21 @@ import ChatListItem from '@/components/chat/ChatListItem';
 const MOCK_CHATS = [
   {
     id: 'c1',
-    user: { name: 'Pablo UV', avatar: 'https://images.unsplash.com/photo-1539571696312-3a504420d4b2' },
+    user: { name: 'Pablo UV', avatar: 'https://picsum.photos/seed/fallback/800/600' },
     lastMessage: 'Mañana a las 18:00 me va bien. ¿Te parece?',
     timestamp: '10:35 AM',
     unread: true,
   },
   {
     id: 'c2',
-    user: { name: 'Sarah Erasmus', avatar: 'https://images.unsplash.com/photo-149479010 la-room.jpg' },
+    user: { name: 'Sarah Erasmus', avatar: 'https://picsum.photos/seed/fallback/800/600' },
     lastMessage: 'Hola! Me gustaría saber más sobre el piso.',
     timestamp: 'Ayer',
     unread: false,
   },
   {
     id: 'c3',
-    user: { name: 'Maria Landlord', avatar: 'https://images.unsplash.com/photo-1544005313-94dde7a23197' },
+    user: { name: 'Maria Landlord', avatar: 'https://picsum.photos/seed/fallback/800/600' },
     lastMessage: 'He recibido tu solicitud de visita.',
     timestamp: 'Lunes',
     unread: false,

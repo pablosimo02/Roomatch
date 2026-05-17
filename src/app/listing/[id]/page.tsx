@@ -12,22 +12,22 @@ const MOCK_LISTING_DETAILS: Record<string, any> = {
   'l1': {
     id: 'l1', title: 'Habitación Luminosa en Ruzafa', price: 450, neighborhood: 'Ruzafa', ecoScore: 78,
     distanceUV: 2.1, distanceUPV: 5.8, type: 'room',
-    images: ['https://images.unsplash.com/photo-1522708323594-d2f6ca577e8d?w=800&q=80', 'https://images.unsplash.com/photo-1502672263668-69152ad837f4?w=800&q=80', 'https://images.unsplash.com/photo-1493809842388-fbd1c94750ad?w=800&q=80'],
+    images: ['https://picsum.photos/seed/fallback/800/600', 'https://picsum.photos/seed/fallback/800/600', 'https://picsum.photos/seed/fallback/800/600'],
     description: 'Increíble habitación en el corazón de Ruzafa. Muy iluminada, con acceso a cocina equipada y salón compartido. Ideal para estudiantes que busquen un ambiente creativo y tranquilo.',
     amenities: ['WiFi Fibra', 'Aire Acondicionado', 'Lavadora', 'Cerca de Metro', 'Balcón'],
     rules: ['No fumadores', 'Sin mascotas', 'Ambiente tranquilo'],
-    owner: { id: 'u3', name: 'Maria Landlord', avatar: 'https://images.unsplash.com/photo-1544005313-94dde7a23197?w=800&q=80', rating: 4.8, reviews: 12, verified: true },
+    owner: { id: 'u3', name: 'Maria Landlord', avatar: 'https://picsum.photos/seed/fallback/800/600', rating: 4.8, reviews: 12, verified: true },
     ecoBreakdown: { energy: 80, transport: 70, waste: 85 },
     billsIncluded: false, availableFrom: '2026-09-01', minStay: '6 meses', instantBook: false, fraudScore: 95,
   },
   'l2': {
     id: 'l2', title: 'Ático con Terraza Ruzafa', price: 800, neighborhood: 'Ruzafa', ecoScore: 70,
     distanceUV: 2.5, distanceUPV: 6.0, type: 'flat',
-    images: ['https://images.unsplash.com/photo-1560448204-603b3fc03ff9?w=800&q=80', 'https://images.unsplash.com/photo-1502672263668-69152ad837f4?w=800&q=80', 'https://images.unsplash.com/photo-1493809842388-fbd1c94750ad?w=800&q=80'],
+    images: ['https://picsum.photos/seed/fallback/800/600', 'https://picsum.photos/seed/fallback/800/600', 'https://picsum.photos/seed/fallback/800/600'],
     description: 'Espectaculares vistas de la ciudad desde la terraza. Piso completo reformado con acabados de lujo.',
     amenities: ['Terraza', 'Parking', 'WiFi', 'AC'],
     rules: ['Solo estudiantes'],
-    owner: { id: 'u3', name: 'Maria Landlord', avatar: 'https://images.unsplash.com/photo-1544005313-94dde7a23197?w=800&q=80', rating: 4.8, reviews: 12, verified: true },
+    owner: { id: 'u3', name: 'Maria Landlord', avatar: 'https://picsum.photos/seed/fallback/800/600', rating: 4.8, reviews: 12, verified: true },
     ecoBreakdown: { energy: 70, transport: 65, waste: 75 },
     billsIncluded: true, availableFrom: '2026-10-01', minStay: '12 meses', instantBook: true, fraudScore: 98,
   },
@@ -41,11 +41,11 @@ export default function ListingDetailPage({ params }: { params: { id: string } }
   const listing = MOCK_LISTING_DETAILS[id] || MOCK_LISTINGS.find(l => l.id === id) || {
     id, title: 'Habitación en Valencia', price: 400, neighborhood: 'Centro', ecoScore: 65,
     distanceUV: 1.5, distanceUPV: 4.0, type: 'room',
-    images: ['https://images.unsplash.com/photo-1522708323594-d2f6ca577e8d?w=800&q=80'],
+    images: ['https://picsum.photos/seed/fallback/800/600'],
     description: 'Descripción detallada de la habitación disponible en Valencia.',
     amenities: ['WiFi', 'Cerca de transporte'],
     rules: ['No fumadores'],
-    owner: { id: 'u3', name: 'Propietario', avatar: 'https://images.unsplash.com/photo-1544005313-94dde7a23197?w=800&q=80', rating: 5, reviews: 1, verified: false },
+    owner: { id: 'u3', name: 'Propietario', avatar: 'https://picsum.photos/seed/fallback/800/600', rating: 5, reviews: 1, verified: false },
     ecoBreakdown: { energy: 60, transport: 70, waste: 70 },
     billsIncluded: false, availableFrom: '2026-09-01', minStay: '6 meses', instantBook: false, fraudScore: 85,
   };
@@ -195,7 +195,7 @@ export default function ListingDetailPage({ params }: { params: { id: string } }
         <div className="flex flex-col gap-6">
           <div className="p-6 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-2xl flex flex-col items-center text-center gap-5 sticky top-24">
             <div className="relative">
-              <img src={listing.owner?.avatar || 'https://images.unsplash.com/photo-1544005313-94dde7a23197?w=800&q=80'} alt={listing.owner?.name || 'Owner'} className="w-20 h-20 rounded-full object-cover border-4 border-primary" />
+              <img src={listing.owner?.avatar || 'https://picsum.photos/seed/fallback/800/600'} alt={listing.owner?.name || 'Owner'} className="w-20 h-20 rounded-full object-cover border-4 border-primary" />
               {listing.owner?.verified && (
                 <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center border-2 border-bg-card">
                   <CheckCircle className="w-4 h-4 text-white" />
