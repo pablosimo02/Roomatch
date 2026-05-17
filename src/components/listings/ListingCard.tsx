@@ -33,7 +33,8 @@ interface ListingCardProps {
 export default function ListingCard({ listing }: ListingCardProps) {
   const { toggleFavorite, isFavorite } = useFavorites();
   const favorited = isFavorite(listing.id);
-  const imageSrc = listing.images && listing.images.length > 0 ? listing.images[0] : 'https://images.unsplash.com/photo-1522708323594-d2f6ca577e8d';
+  const [imgError, setImgError] = React.useState(false);
+  const imageSrc = listing.images && listing.images.length > 0 && !imgError ? listing.images[0] : 'https://images.unsplash.com/photo-1522708323594-d2f6ca577e8d?w=800&q=80';
 
   return (
     <Link href={`/listing/${listing.id}`} className="block">
@@ -42,11 +43,12 @@ export default function ListingCard({ listing }: ListingCardProps) {
         className="group relative bg-white/5 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-xl hover:border-primary/50 transition-all duration-300 cursor-pointer"
       >
         {/* Image Section */}
-        <div className="relative h-56 w-full overflow-hidden">
+        <div className="relative h-56 w-full overflow-hidden bg-gray-800">
           <img
             src={imageSrc}
             alt={listing.title}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            onError={() => setImgError(true)}
           />
 
           {/* Heart Button */}
