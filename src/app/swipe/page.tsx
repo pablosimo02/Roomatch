@@ -1,104 +1,98 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Heart, Star } from 'lucide-react';
-import SwipeCard from './SwipeCard';
-import MatchModal from './MatchModal';
-
-const MOCK_SWIPE_LISTINGS = [
-  {
-    id: '1',
-    title: 'Habitación Luminosa en Ruzafa',
-    price: 450,
-    neighborhood: 'Ruzafa',
-    images: ['https://images.unsplash.com/photo-1522708323594-d2f6ca577e8d'],
-  },
-  {
-    id: '2',
-    title: 'Estudio Moderno Benimaclet',
-    price: 600,
-    neighborhood: 'Benimaclet',
-    images: ['https://images.unsplash.com/photo-1502672263668-69152ad837f4'],
-  },
-  {
-    id: '3',
-    title: 'Habitación Vintage El Carmen',
-    price: 420,
-    neighborhood: 'El Carmen',
-    images: ['https://images.unsplash.com/photo-1493809842388-fbd1c94750ad'],
-  },
-];
+import { Heart, X, MapPin, Leaf } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { MOCK_LISTINGS } from '@/lib/mock/listings';
 
 export default function SwipePage() {
+  const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [lastDirection, setLastDirection] = useState<string | null>(null);
-  const [isMatch, setIsMatch] = useState(false);
+  const [direction, setDirection] = useState<'left' | 'right' | null>(null);
+  const [matches, setMatches] = useState<string[]>([]);
 
-  const handleSwipe = (direction: 'left' | 'right' | 'up') => {
-    setLastDirection(direction);
+  const currentListing = MOCK_LISTINGS[currentIndex];
+  const remaining = MOCK_LISTINGS.length - currentIndex;
 
-    // Simulate a match if swiped right
-    if (direction === 'right' && Math.random() > 0.5) {
-      setIsMatch(true);
-    }
+  const swipe = useCallback((dir: 'left' | 'right') => {
+    if (!currentListing) return;
+    setDirection(dir);
 
-    setCurrentIndex(prev => prev + 1);
-  };
+    setTimeout(() => {
+      if (dir === 'right') {
+        const ownerId = currentListing.ownerId || 'u3';
+        setMatches(prev => [...prev, currentListing.id]);
+        router.push(`/chat/${ownerId}?greeting=Hola! Me interesa tu anuncio de ${currentListing.title}. ¿Está disponible todavía?`);
+        return;
+      }
+      setDirection(null);
+      setCurrentIndex(prev => prev + 1);
+    }, 300);
+  }, [currentListing, router]);
 
-  if (currentIndex >= MOCK_SWIPE_LISTINGS.length) {
+  if (!currentListing || remaining <= 0) {
     return (
-      <div className="h-[80vh] flex flex-col items-center justify-center text-center gap-4">
-        <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center animate-bounce">
-          <Heart className="w-10 h-10 text-primary" />
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center gap-6">
+        <div className="p-8 rounded-full bg-white/5">
+          <Heart className="w-20 h-20 text-primary" />
         </div>
         <h2 className="text-3xl font-bold font-clash">¡No hay más pisos!</h2>
-        <p className="text-text-muted max-w-xs">Hemos agotado las opciones por ahora. Vuelve más tarde para descubrir nuevas joyas.</p>
-        <button
-          onClick={() => setCurrentIndex(0)}
-          className="px-6 py-2 bg-primary text-white rounded-xl font-bold hover:bg-primary-dark transition-all"
-        >
-          Reiniciar búsqueda
-        </button>
+        <p className="text-text-muted max-w-md">Has visto todos los pisos disponibles. Vuelve pronto para ver nuevos anuncios.</p>
       </div>
     );
   }
 
   return (
-    <div className="relative h-[85vh] flex flex-col items-center justify-center">
-      <div className="relative w-full max-w-md h-[600px]">
+    <div className="flex flex-col items-center gap-8 max-w-lg mx-auto">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold font-clash">Swipe Pisos</h1>
+        <p className="text-text-muted">{remaining} pisos restantes</p>
+      </div>
+
+      <div className="relative w-full aspect-[3/4]">
         <AnimatePresence>
-          {MOCK_SWIPE_LISTINGS.slice(currentIndex).map((listing, index) => (
-            <SwipeCard
-              key={listing.id}
-              listing={listing}
-              onSwipe={handleSwipe}
-            />
-          ))}
+          <motion.div
+            key={currentListing.id}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{
+              x: direction === 'right' ? 500 : -500,
+              opacity: 0,
+              rotate: direction === 'right' ? 20 : -20,
+              transition: { duration: 0.3 }
+            }}
+            className="absolute inset-0 rounded-3xl overflow-hidden bg-white/5 border border-white/10 cursor-grab active:cursor-grabbing"
+          >
+            <img src={currentListing.images[0] || 'https://images.unsplash.com/photo-1522708323594-d2f6ca577e8d?w=800&q=80'} alt={currentListing.title} className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-6">
+              <div className="flex justify-between items-start mb-2">
+                <h2 className="text-2xl font-bold">{currentListing.title}</h2>
+                <span className="text-2xl font-bold text-primary">{currentListing.price}€</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-text-muted">
+                <MapPin className="w-4 h-4 text-primary" />
+                <span>{currentListing.neighborhood}</span>
+              </div>
+              <div className="flex items-center gap-2 mt-2 text-xs">
+                <span className="px-2 py-1 rounded-full bg-accent/20 text-accent font-semibold flex items-center gap-1">
+                  <Leaf className="w-3 h-3" /> Eco {currentListing.ecoScore}
+                </span>
+                <span className="px-2 py-1 rounded-full bg-white/10 text-text-muted capitalize">{currentListing.type}</span>
+              </div>
+            </div>
+          </motion.div>
         </AnimatePresence>
       </div>
 
-      <div className="mt-12 flex items-center gap-6">
-        <button
-          onClick={() => handleSwipe('left')}
-          className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-red-500 hover:bg-red-500/20 transition-all"
-        >
-          <X className="w-6 h-6" />
+      <div className="flex items-center gap-6">
+        <button onClick={() => swipe('left')} className="p-5 rounded-full bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 transition-all">
+          <X className="w-8 h-8 text-red-500" />
         </button>
-        <button
-          onClick={() => handleSwipe('up')}
-          className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-accent hover:bg-accent/20 transition-all"
-        >
-          <Star className="w-5 h-5" />
-        </button>
-        <button
-          onClick={() => handleSwipe('right')}
-          className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-emerald-500 hover:bg-emerald-500/20 transition-all"
-        >
-          <Heart className="w-6 h-6" />
+        <button onClick={() => swipe('right')} className="p-5 rounded-full bg-accent/20 border border-accent/30 hover:bg-accent/30 transition-all">
+          <Heart className="w-8 h-8 text-accent" />
         </button>
       </div>
-
-      {isMatch && <MatchModal onClose={() => setIsMatch(false)} />}
     </div>
   );
 }

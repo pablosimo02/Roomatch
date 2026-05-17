@@ -1,109 +1,93 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Heart, Star } from 'lucide-react';
-import RoommateCard from '@/components/matching/RoommateCard';
-import CompatibilityBar from '@/components/matching/CompatibilityBar';
-import MatchModal from '@/components/swipe/MatchModal';
-
-const MOCK_ROOMMATES = [
-  {
-    id: 'u1',
-    name: 'Pablo UV',
-    university: 'Universidad de Valencia',
-    bio: 'Buscando compañero tranquilo, me encanta programar y la sostenibilidad.',
-    interests: ['TypeScript', 'Eco-living', 'Gaming'],
-    avatar: 'https://images.unsplash.com/photo-1539571696312-3a504420d4b2',
-    compatibilityScore: 92,
-    compatibilityBreakdown: {
-      budget: 95,
-      schedule: 88,
-      cleanliness: 90,
-      studyHabits: 98,
-      lifestyle: 85,
-      interests: 90,
-      ecoValues: 95,
-    },
-  },
-  {
-    id: 'u2',
-    name: 'Sarah Erasmus',
-    university: 'UPV',
-    bio: 'Llego de Alemania para estudiar un año. Busco gente abierta y sociable.',
-    interests: ['Art', 'Veganism', 'Hiking'],
-    avatar: 'https://images.unsplash.com/photo-1494790108377-697920257a9a',
-    compatibilityScore: 74,
-    compatibilityBreakdown: {
-      budget: 70,
-      schedule: 60,
-      cleanliness: 80,
-      studyHabits: 70,
-      lifestyle: 90,
-      interests: 75,
-      ecoValues: 85,
-    },
-  },
-];
+import { X, Heart, Star, MapPin, Sparkles } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { MOCK_ROOMMATES } from '@/lib/mock/roommates';
 
 export default function RoommatesPage() {
+  const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isMatch, setIsMatch] = useState(false);
+  const [direction, setDirection] = useState<'left' | 'right' | null>(null);
 
-  const handleSwipe = (direction: string) => {
-    if (direction === 'right' && Math.random() > 0.5) {
-      setIsMatch(true);
-    }
-    setCurrentIndex(prev => prev + 1);
-  };
+  const currentUser = MOCK_ROOMMATES[currentIndex];
+  const remaining = MOCK_ROOMMATES.length - currentIndex;
 
-  if (currentIndex >= MOCK_ROOMMATES.length) {
+  const swipe = useCallback((dir: 'left' | 'right') => {
+    if (!currentUser) return;
+    setDirection(dir);
+
+    setTimeout(() => {
+      setDirection(null);
+      if (dir === 'right') {
+        router.push(`/chat/${currentUser.id}?greeting=¡Hemos hecho match! ¿Quieres que hablemos sobre compartir piso?`);
+        return;
+      }
+      setCurrentIndex(prev => prev + 1);
+    }, 300);
+  }, [currentUser, router]);
+
+  if (!currentUser || remaining <= 0) {
     return (
-      <div className="h-[80vh] flex flex-col items-center justify-center text-center gap-4">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center gap-6">
+        <div className="p-8 rounded-full bg-white/5"><Heart className="w-20 h-20 text-primary" /></div>
         <h2 className="text-3xl font-bold font-clash">¡Sin más candidatos!</h2>
-        <p className="text-text-muted max-w-xs">Has visto a todos los compañeros compatibles en Valencia por ahora.</p>
-        <button
-          onClick={() => setCurrentIndex(0)}
-          className="px-6 py-2 bg-primary text-white rounded-xl font-bold hover:bg-primary-dark transition-all"
-        >
-          Reiniciar
-        </button>
+        <p className="text-text-muted max-w-md">Has visto a todos los compañeros disponibles.</p>
+        <button onClick={() => setCurrentIndex(0)} className="px-6 py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary-dark transition-all">Reiniciar</button>
       </div>
     );
   }
 
-  const user = MOCK_ROOMMATES[currentIndex];
-
   return (
-    <div className="relative h-[85vh] flex flex-col items-center justify-center gap-8">
-      <div className="relative w-full max-w-2xl flex flex-col md:flex-row gap-8 items-center">
-        <div className="w-full md:w-1/2 relative h-[500px]">
-          <RoommateCard user={user} />
-        </div>
-
-        <div className="w-full md:w-1/2 flex flex-col gap-6">
-          <CompatibilityBar
-            score={user.compatibilityScore}
-            breakdown={user.compatibilityBreakdown}
-          />
-
-          <div className="flex justify-center gap-6 mt-4">
-            <button
-              onClick={() => handleSwipe('left')}
-              className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-red-500 hover:bg-red-500/20 transition-all"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            <button
-              onClick={() => handleSwipe('right')}
-              className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-emerald-500 hover:bg-emerald-500/20 transition-all"
-            >
-              <Heart className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
+    <div className="flex flex-col items-center gap-8 max-w-lg mx-auto">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold font-clash">Compañeros</h1>
+        <p className="text-text-muted">{remaining} candidatos restantes</p>
       </div>
 
-      {isMatch && <MatchModal onClose={() => setIsMatch(false)} />}
+      <div className="relative w-full aspect-[4/5]">
+        <AnimatePresence>
+          <motion.div
+            key={currentUser.id}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ x: direction === 'right' ? 500 : -500, opacity: 0, rotate: direction === 'right' ? 20 : -20, transition: { duration: 0.3 } }}
+            className="absolute inset-0 rounded-3xl overflow-hidden bg-white/5 border border-white/10"
+          >
+            <img src={currentUser.avatar || 'https://images.unsplash.com/photo-1539571696312-3a504420d4b2?w=800&q=80'} alt={currentUser.name} className="w-full h-3/5 object-cover" />
+            <div className="p-6 flex flex-col gap-3">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-xl font-bold">{currentUser.name}</h2>
+                  <div className="flex items-center gap-1 text-sm text-text-muted">
+                    <MapPin className="w-3 h-3 text-primary" />
+                    <span>{currentUser.university}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 text-accent">
+                  <Star className="w-4 h-4 fill-accent" />
+                  <span className="font-bold">{currentUser.compatibilityScore}%</span>
+                </div>
+              </div>
+              <p className="text-sm text-text-muted">{currentUser.bio}</p>
+              <div className="flex flex-wrap gap-1.5">
+                {currentUser.interests?.map(i => (
+                  <span key={i} className="px-2 py-0.5 rounded-full bg-white/10 text-xs text-text-muted">{i}</span>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      <div className="flex items-center gap-6">
+        <button onClick={() => swipe('left')} className="p-5 rounded-full bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 transition-all">
+          <X className="w-8 h-8 text-red-500" />
+        </button>
+        <button onClick={() => swipe('right')} className="p-5 rounded-full bg-accent/20 border border-accent/30 hover:bg-accent/30 transition-all">
+          <Heart className="w-8 h-8 text-accent" />
+        </button>
+      </div>
     </div>
   );
 }

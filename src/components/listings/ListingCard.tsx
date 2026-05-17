@@ -1,9 +1,12 @@
+"use client";
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Leaf, MapPin } from 'lucide-react';
+import { Leaf, MapPin, Heart } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import Link from 'next/link';
+import { useFavorites } from '@/hooks/useFavorites';
+import { FraudBadge } from '@/components/badges/FraudBadge';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -18,12 +21,18 @@ interface ListingCardProps {
     ecoScore: number;
     distanceUV: number;
     distanceUPV: number;
+    distanceUEV?: number;
+    distanceUCV?: number;
+    distanceCEU?: number;
     images: string[];
     type: string;
+    fraudScore?: number;
   };
 }
 
 export default function ListingCard({ listing }: ListingCardProps) {
+  const { toggleFavorite, isFavorite } = useFavorites();
+  const favorited = isFavorite(listing.id);
   const imageSrc = listing.images && listing.images.length > 0 ? listing.images[0] : 'https://images.unsplash.com/photo-1522708323594-d2f6ca577e8d';
 
   return (
@@ -40,10 +49,21 @@ export default function ListingCard({ listing }: ListingCardProps) {
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
 
-          {/* EcoScore Badge */}
-          <div className="absolute top-4 right-4 flex items-center gap-1 px-3 py-1 rounded-full bg-accent text-white text-xs font-bold shadow-lg">
-            <Leaf className="w-3 h-3" />
-            <span>{listing.ecoScore ?? 'N/A'}</span>
+          {/* Heart Button */}
+          <button
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleFavorite(listing.id); }}
+            className="absolute top-4 left-4 p-2 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-all duration-300 hover:scale-110 z-10"
+          >
+            <Heart className={`w-5 h-5 transition-colors ${favorited ? 'fill-red-500 text-red-500' : 'text-white'}`} />
+          </button>
+
+          {/* Badges Row */}
+          <div className="absolute top-4 right-4 flex flex-col gap-1.5 items-end">
+            <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-accent text-white text-xs font-bold shadow-lg">
+              <Leaf className="w-3 h-3" />
+              <span>{listing.ecoScore ?? 'N/A'}</span>
+            </div>
+            {listing.fraudScore && <FraudBadge score={listing.fraudScore} />}
           </div>
 
           {/* Price Tag */}
@@ -68,7 +88,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
             <span>{listing.neighborhood ?? 'Valencia'}, Valencia</span>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 pt-3 border-t border-white/10">
+          <div className="grid grid-cols-3 gap-3 pt-3 border-t border-white/10">
             <div className="flex flex-col">
               <span className="text-[10px] uppercase tracking-wider text-text-muted font-semibold">Dist. UV</span>
               <span className="text-sm font-medium">{listing.distanceUV ?? 0} km</span>
@@ -76,6 +96,18 @@ export default function ListingCard({ listing }: ListingCardProps) {
             <div className="flex flex-col">
               <span className="text-[10px] uppercase tracking-wider text-text-muted font-semibold">Dist. UPV</span>
               <span className="text-sm font-medium">{listing.distanceUPV ?? 0} km</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[10px] uppercase tracking-wider text-text-muted font-semibold">Dist. UEV</span>
+              <span className="text-sm font-medium">{listing.distanceUEV ?? listing.distanceUV ?? 0} km</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[10px] uppercase tracking-wider text-text-muted font-semibold">Dist. UCV</span>
+              <span className="text-sm font-medium">{listing.distanceUCV ?? listing.distanceUV ?? 0} km</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[10px] uppercase tracking-wider text-text-muted font-semibold">Dist. CEU</span>
+              <span className="text-sm font-medium">{listing.distanceCEU ?? listing.distanceUPV ?? 0} km</span>
             </div>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Map, User, MessageSquare, LayoutDashboard, Settings, Heart, Home } from 'lucide-react';
+import { Map, User, MessageSquare, LayoutDashboard, Settings, Heart, Home, BarChart3, MessageCircle, Crown } from 'lucide-react';
 import Link from 'next/link';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -26,19 +26,31 @@ const SidebarItem = ({ href, icon: Icon, label, active = false }: { href: string
 
 export default function Sidebar() {
   return (
-    <aside className="fixed left-0 top-16 bottom-0 w-64 p-4 hidden lg:flex flex-col gap-6 backdrop-blur-xl bg-white/5 border-r border-white/10">
+    <aside className="fixed left-0 top-16 bottom-0 w-64 p-4 hidden lg:flex flex-col gap-6 backdrop-blur-xl bg-white/5 border-r border-white/10 overflow-y-auto">
       <div className="flex flex-col gap-2">
-        <p className="px-4 text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">Menu Principal</p>
+        <p className="px-4 text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">Marketplace</p>
         <SidebarItem href="/explore" icon={Map} label="Marketplace" />
         <SidebarItem href="/swipe" icon={Heart} label="Swipe Pisos" />
         <SidebarItem href="/roommates" icon={User} label="Compañeros" />
-        <SidebarItem href="/dashboard" icon={LayoutDashboard} label="Mercado" />
+        <SidebarItem href="/favorites" icon={Heart} label="Favoritos" />
       </div>
 
       <div className="flex flex-col gap-2">
-        <p className="px-4 text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">Personal</p>
+        <p className="px-4 text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">Analytics</p>
+        <SidebarItem href="/dashboard" icon={LayoutDashboard} label="Mercado" />
+        <SidebarItem href="/looker-dashboard" icon={BarChart3} label="Dashboard Looker" />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <p className="px-4 text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">Comunidad</p>
         <SidebarItem href="/chat" icon={MessageSquare} label="Mensajes" />
+        <SidebarItem href="/social" icon={MessageCircle} label="Social" />
         <SidebarItem href="/profile" icon={User} label="Mi Perfil" />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <p className="px-4 text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">Premium</p>
+        <SidebarItem href="/premium" icon={Crown} label="Planes" />
         <SidebarItem href="/settings" icon={Settings} label="Configuración" />
       </div>
 

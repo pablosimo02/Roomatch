@@ -8,6 +8,7 @@ import {
 } from 'recharts';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { ODSCard } from '@/components/badges/ODSBadges';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -184,6 +185,9 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* ODS Section */}
+      <ODSCard />
     </div>
   );
 }
