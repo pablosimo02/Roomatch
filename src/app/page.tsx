@@ -6,12 +6,12 @@ import Link from 'next/link';
 import { ODSRow } from '@/components/badges/ODSBadges';
 
 const FEATURES = [
-  { icon: Map, title: "Marketplace Inteligente", desc: "Filtra por barrio, precio y EcoScore. Encuentra la ubicación perfecta cerca de tu universidad.", color: '#0EA5E9' },
-  { icon: User, title: "Matching de Compañeros", desc: "Swipea perfiles basados en hábitos de limpieza, horarios y valores.", color: '#F59E0B' },
-  { icon: Leaf, title: "Sostenibilidad Real", desc: "Calculamos el EcoScore de cada vivienda basándonos en transporte, energía y huella de CO2.", color: '#10B981' },
-  { icon: ShieldCheck, title: "Anti-Fraude IA", desc: "Nuestra IA analiza cada anuncio para detectar estafas y verificar propietarios.", color: '#6366F1' },
-  { icon: Sparkles, title: "Asistente IA", desc: "Chatbot experto que te ayuda a elegir el mejor barrio según tu presupuesto.", color: '#EC4899' },
-  { icon: LayoutDashboard, title: "Data Dashboard", desc: "Analiza la evolución de precios y demanda en tiempo real por cada barrio.", color: '#3B82F6' },
+  { icon: Map, emoji: '🏠', title: "Marketplace Inteligente", desc: "Filtra por barrio, precio y EcoScore. Encuentra la ubicación perfecta cerca de tu universidad.", color: '#0EA5E9' },
+  { icon: User, emoji: '👥', title: "Matching de Compañeros", desc: "Swipea perfiles basados en hábitos de limpieza, horarios y valores.", color: '#F59E0B' },
+  { icon: Leaf, emoji: '🌿', title: "Sostenibilidad Real", desc: "Calculamos el EcoScore de cada vivienda basándonos en transporte, energía y huella de CO2.", color: '#10B981' },
+  { icon: ShieldCheck, emoji: '🛡️', title: "Anti-Fraude IA", desc: "Nuestra IA analiza cada anuncio para detectar estafas y verificar propietarios.", color: '#6366F1' },
+  { icon: Sparkles, emoji: '🤖', title: "Asistente IA", desc: "Chatbot experto que te ayuda a elegir el mejor barrio según tu presupuesto.", color: '#EC4899' },
+  { icon: LayoutDashboard, emoji: '📊', title: "Data Dashboard", desc: "Analiza la evolución de precios y demanda en tiempo real por cada barrio.", color: '#3B82F6' },
 ];
 
 function AnimatedLogo() {
@@ -76,11 +76,16 @@ export default function LandingPage() {
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {FEATURES.map((f, i) => (
           <motion.div key={i} whileHover={{ y: -6 }} transition={{ duration: 0.25 }} className="group rounded-2xl bg-white p-8 border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)] transition-all">
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-colors" style={{ backgroundColor: `${f.color}15` }}>
-              <f.icon className="w-6 h-6" color={f.color} />
+            <div className="relative mb-6">
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center transition-all shadow-lg" style={{ backgroundColor: `${f.color}20`, boxShadow: `0 8px 24px ${f.color}25` }}>
+                <span className="text-3xl filter drop-shadow-sm">{f.emoji}</span>
+              </div>
+              <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: f.color }}>
+                <f.icon className="w-3 h-3 text-white" strokeWidth={2.5} />
+              </div>
             </div>
-            <h3 className="text-lg font-bold font-clash mb-3 text-[#1A1A2E]">{f.title}</h3>
-            <p className="text-[#6B7280] leading-relaxed text-sm">{f.desc}</p>
+            <h3 className="text-xl font-bold font-clash mb-3 text-[#1A1A2E]" style={{ fontWeight: 800 }}>{f.title}</h3>
+            <p className="text-[#6B7280] leading-relaxed text-base">{f.desc}</p>
           </motion.div>
         ))}
       </section>
