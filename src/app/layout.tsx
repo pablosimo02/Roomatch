@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, Syne } from "next/font/google";
 import "./globals.css";
 import MainLayout from "@/components/layout/MainLayout";
 import ChatbotWidget from "@/components/ai/ChatbotWidget";
+import { ClientProviders } from "./ClientProviders";
 
 const jakartaSans = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -30,10 +31,12 @@ export default function RootLayout({
       className={`${jakartaSans.variable} ${clashDisplay.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <MainLayout>
-          {children}
-        </MainLayout>
-        <ChatbotWidget />
+        <ClientProviders>
+          <MainLayout>
+            {children}
+          </MainLayout>
+          <ChatbotWidget />
+        </ClientProviders>
       </body>
     </html>
   );

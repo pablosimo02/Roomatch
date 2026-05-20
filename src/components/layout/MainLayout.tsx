@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-bg-dark text-text-primary selection:bg-primary/30">
+    <div className="min-h-screen bg-[#F7F8FC] text-[#1A1A2E] selection:bg-primary/30">
       <Navbar />
       <div className="flex pt-16">
         <Sidebar />

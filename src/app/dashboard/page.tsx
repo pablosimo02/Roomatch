@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, Map as MapIcon, Leaf, Users, AlertCircle , Sparkles} from 'lucide-react';
+import { TrendingUp, Map as MapIcon, Leaf, Users, AlertCircle, Sparkles} from 'lucide-react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, Cell, AreaChart, Area
@@ -18,7 +18,7 @@ interface KPICardProps {
   title: string;
   value: string;
   change: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
   trend: 'up' | 'down';
 }
 
@@ -26,10 +26,10 @@ function KPICard({ title, value, change, icon: Icon, trend }: KPICardProps) {
   return (
     <motion.div
       whileHover={{ y: -5 }}
-      className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl flex flex-col gap-4"
+      className="p-6 rounded-2xl bg-[#13131A] border border-white/10 flex flex-col gap-4 shadow-lg"
     >
       <div className="flex justify-between items-start">
-        <div className="p-3 rounded-2xl bg-primary/20 text-primary">
+        <div className="p-3 rounded-xl bg-primary/20 text-primary">
           <Icon className="w-6 h-6" />
         </div>
         <span className={cn(
@@ -40,15 +40,14 @@ function KPICard({ title, value, change, icon: Icon, trend }: KPICardProps) {
         </span>
       </div>
       <div>
-        <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">{title}</p>
-        <h3 className="text-3xl font-bold font-clash">{value}</h3>
+        <p className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-1">{title}</p>
+        <h3 className="text-3xl font-bold font-clash text-white">{value}</h3>
       </div>
     </motion.div>
   );
 }
 
 export default function DashboardPage() {
-  // Real-world simulation data for Valencia
   const priceHistory = [
     { year: '2020', price: 320 },
     { year: '2021', price: 350 },
@@ -75,13 +74,12 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="flex flex-col gap-12 pb-20">
+    <div className="flex flex-col gap-12 pb-20 -mx-6 -mt-6 px-6 pt-16 bg-[#0A0A0F]">
       <div className="flex flex-col gap-2">
-        <h1 className="text-4xl font-bold font-clash">Mercado de Valencia</h1>
-        <p className="text-text-muted">Análisis de datos en tiempo real y métricas de sostenibilidad.</p>
+        <h1 className="text-3xl font-bold font-clash text-white">Mercado de Valencia</h1>
+        <p className="text-white/50">Análisis de datos en tiempo real y métricas de sostenibilidad.</p>
       </div>
 
-      {/* Fila 1: KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <KPICard title="Precio Medio Hab." value="450€" change="+8.3%" icon={TrendingUp} trend="up" />
         <KPICard title="Barrio Demandado" value="Ruzafa" change="94/100" icon={MapIcon} trend="up" />
@@ -89,10 +87,9 @@ export default function DashboardPage() {
         <KPICard title="Usuarios Activos" value="1,240" change="+12%" icon={Users} trend="up" />
       </div>
 
-      {/* Fila 2: Market Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl flex flex-col gap-6">
-          <h3 className="text-xl font-bold font-clash flex items-center gap-2">
+        <div className="p-8 rounded-2xl bg-[#13131A] border border-white/10 flex flex-col gap-6 shadow-lg">
+          <h3 className="text-lg font-bold font-clash flex items-center gap-2 text-white">
             <TrendingUp className="w-5 h-5 text-primary" /> Evolución Precios (Valencia)
           </h3>
           <div className="h-64 w-full">
@@ -109,10 +106,11 @@ export default function DashboardPage() {
               </LineChart>
             </ResponsiveContainer>
           </div>
+          <p className="text-xs text-white/40">Evolución del precio medio de habitación en Valencia desde 2020. Fuente: INE + datos propios.</p>
         </div>
 
-        <div className="p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl flex flex-col gap-6">
-          <h3 className="text-xl font-bold font-clash flex items-center gap-2">
+        <div className="p-8 rounded-2xl bg-[#13131A] border border-white/10 flex flex-col gap-6 shadow-lg">
+          <h3 className="text-lg font-bold font-clash flex items-center gap-2 text-white">
             <MapIcon className="w-5 h-5 text-accent" /> Precio Medio por Barrio
           </h3>
           <div className="h-64 w-full">
@@ -132,13 +130,13 @@ export default function DashboardPage() {
               </BarChart>
             </ResponsiveContainer>
           </div>
+          <p className="text-xs text-white/40">Comparativa de precios medios por barrio. Ruzafa y El Carmen son los más caros.</p>
         </div>
       </div>
 
-      {/* Fila 3: Sustainability & AI */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl flex flex-col gap-6">
-          <h3 className="text-xl font-bold font-clash flex items-center gap-2">
+        <div className="lg:col-span-2 p-8 rounded-2xl bg-[#13131A] border border-white/10 flex flex-col gap-6 shadow-lg">
+          <h3 className="text-lg font-bold font-clash flex items-center gap-2 text-white">
             <Leaf className="w-5 h-5 text-accent" /> Ahorro de CO2 (kg/mes)
           </h3>
           <div className="h-64 w-full">
@@ -159,26 +157,27 @@ export default function DashboardPage() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
+          <p className="text-xs text-white/40">Ahorro acumulado de CO2 gracias a la optimización de rutas y transporte compartido.</p>
         </div>
 
-        <div className="p-8 rounded-3xl bg-gradient-to-br from-primary/20 via-transparent to-accent/20 border border-white/10 backdrop-blur-xl flex flex-col gap-6">
-          <h3 className="text-xl font-bold font-clash flex items-center gap-2">
+        <div className="p-8 rounded-2xl bg-gradient-to-br from-primary/20 via-transparent to-accent/20 border border-white/10 flex flex-col gap-6">
+          <h3 className="text-lg font-bold font-clash flex items-center gap-2 text-white">
             <Sparkles className="w-5 h-5 text-primary" /> Insights IA
           </h3>
           <div className="flex flex-col gap-4">
-            <div className="p-4 rounded-2xl bg-white/10 border border-white/10 hover:border-primary/50 transition-all">
+            <div className="p-4 rounded-xl bg-white/10 border border-white/10 hover:border-primary/50 transition-all">
               <div className="flex items-center gap-2 mb-2 text-accent font-bold text-xs uppercase">
                 <TrendingUp className="w-3 h-3" /> Tendencia
               </div>
-              <p className="text-sm text-text-primary leading-relaxed">
+              <p className="text-sm text-white/80 leading-relaxed">
                 La demanda en <span className="text-primary font-bold">Benimaclet</span> ha subido un 12% este mes debido al inicio del curso.
               </p>
             </div>
-            <div className="p-4 rounded-2xl bg-white/10 border border-white/10 hover:border-primary/50 transition-all">
+            <div className="p-4 rounded-xl bg-white/10 border border-white/10 hover:border-primary/50 transition-all">
               <div className="flex items-center gap-2 mb-2 text-red-500 font-bold text-xs uppercase">
                 <AlertCircle className="w-3 h-3" /> Alerta
               </div>
-              <p className="text-sm text-text-primary leading-relaxed">
+              <p className="text-sm text-white/80 leading-relaxed">
                 Se detecta una subida artificial de precios en <span className="text-primary font-bold">Ruzafa</span>. Ten cuidado con anuncios sospechosos.
               </p>
             </div>
@@ -186,7 +185,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ODS Section */}
       <ODSCard />
     </div>
   );

@@ -29,7 +29,7 @@ export default function ProfilePage() {
             <h3 className="text-xl font-bold font-clash mb-6">Reviews Recibidas</h3>
             <div className="flex flex-col gap-4">
               <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-                <p className="text-sm italic">"Gran compañero, muy respetuoso con la limpieza y los horarios."</p>
+                <p className="text-sm italic">&quot;Gran compañero, muy respetuoso con la limpieza y los horarios.&quot;</p>
                 <span className="text-xs text-primary font-bold mt-2 block">— Sarah E.</span>
               </div>
             </div>

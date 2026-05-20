@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { User, Map, MessageSquare, LayoutDashboard, Settings, Menu, X, Heart, BarChart3, Users, Crown, MessageCircle } from 'lucide-react';
+import { User, Search, Map, LayoutDashboard, Menu, X, Heart, BarChart3, Crown, MessageCircle } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { RooMatchLogo, RooMatchWordmark } from '@/components/branding/Logo';
@@ -10,18 +10,18 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const NavItem = ({ href, icon: Icon, label, active = false }: { href: string; icon: any; label: string; active?: boolean }) => (
+const NavItem = ({ href, icon: Icon, label, active = false }: { href: string; icon: React.ComponentType<{ className?: string }>; label: string; active?: boolean }) => (
   <Link
     href={href}
     className={cn(
-      "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group",
+      "flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200",
       active
-        ? "bg-primary text-white shadow-[0_0_20px_rgba(99,102,241,0.3)]"
-        : "text-text-muted hover:bg-white/10 hover:text-text-primary"
+        ? "bg-primary/10 text-primary"
+        : "text-[#6B7280] hover:bg-gray-100 hover:text-[#1A1A2E]"
     )}
   >
-    <Icon className={cn("w-5 h-5 transition-colors", active ? "text-white" : "group-hover:text-primary")} />
-    <span className="font-medium">{label}</span>
+    <Icon className={cn("w-4 h-4", active ? "text-primary" : "")} />
+    <span>{label}</span>
   </Link>
 );
 
@@ -29,8 +29,8 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-6 backdrop-blur-xl bg-white/5 border-b border-white/10 text-text-primary">
-      <div className="flex items-center gap-8">
+    <nav className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-4 md:px-6 bg-white border-b border-gray-100 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+      <div className="flex items-center gap-6">
         <Link href="/" className="flex items-center gap-2 group">
           <RooMatchLogo size="sm" />
           <RooMatchWordmark />
@@ -47,24 +47,33 @@ export default function Navbar() {
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        <Link href="/favorites" className="relative p-2 rounded-lg hover:bg-white/10 transition-all">
-          <Heart className="w-5 h-5 text-text-muted hover:text-red-400 transition-colors" />
+      <div className="hidden md:flex items-center min-w-[280px] max-w-[420px] w-full">
+        <div className="group flex items-center gap-2 w-full rounded-full border border-gray-200 bg-gray-50 hover:bg-gray-100 focus-within:bg-white focus-within:border-primary/50 focus-within:shadow-[0_2px_8px_rgba(255,56,92,0.15)] px-4 py-2.5 transition-all duration-300">
+          <Search className="w-4 h-4 text-gray-400 group-focus-within:text-primary" />
+          <input
+            placeholder="Buscar barrio, uni o tipo de piso"
+            className="w-full bg-transparent text-sm text-[#1A1A2E] placeholder:text-gray-400 focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <Link href="/favorites" className="relative p-2 rounded-full hover:bg-gray-100 transition-all">
+          <Heart className="w-5 h-5 text-gray-500 hover:text-primary transition-colors" />
         </Link>
-        <Link href="/profile" className="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all">
-          <User className="w-5 h-5 text-text-primary" />
+        <Link href="/profile" className="w-9 h-9 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center hover:bg-gray-200 hover:border-primary/30 transition-all">
+          <User className="w-4 h-4 text-[#1A1A2E]" />
         </Link>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden p-2 text-text-primary hover:bg-white/10 rounded-lg transition-all"
+          className="md:hidden p-2 text-[#1A1A2E] hover:bg-gray-100 rounded-lg transition-all"
         >
           {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {isOpen && (
-        <div className="absolute top-16 left-0 right-0 p-4 bg-bg-card border-b border-white/10 backdrop-blur-2xl flex flex-col gap-2 animate-in slide-in-from-top duration-200 max-h-[80vh] overflow-y-auto">
+        <div className="absolute top-16 left-0 right-0 p-4 bg-white border-b border-gray-100 shadow-lg flex flex-col gap-1 animate-in slide-in-from-top duration-200 max-h-[80vh] overflow-y-auto">
           <NavItem href="/explore" icon={Map} label="Explore" />
           <NavItem href="/swipe" icon={Map} label="Swipe" />
           <NavItem href="/roommates" icon={User} label="Roommates" />

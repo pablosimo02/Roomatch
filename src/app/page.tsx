@@ -16,12 +16,12 @@ function AnimatedLogo() {
       <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="g" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#6366F1" /><stop offset="1" stopColor="#10B981" />
+            <stop stopColor="#FF385C" /><stop offset="1" stopColor="#10B981" />
           </linearGradient>
         </defs>
         <rect x="4" y="4" width="72" height="72" rx="20" fill="url(#g)" />
         <path d="M40 20L24 34V56H34V44H46V56H56V34L40 20Z" fill="white" opacity="0.95" />
-        <path d="M40 42C40 42 30 35 30 29C30 25.5 33 23 36 23C37.6 23 39 24 40 25C41 24 42.4 23 44 23C47 23 50 25.5 50 29C50 35 40 42 40 42Z" fill="#6366F1" opacity="0.9" />
+        <path d="M40 42C40 42 30 35 30 29C30 25.5 33 23 36 23C37.6 23 39 24 40 25C41 24 42.4 23 44 23C47 23 50 25.5 50 29C50 35 40 42 40 42Z" fill="#FF385C" opacity="0.9" />
         <text x="40" y="64" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold" fontFamily="system-ui">R</text>
       </svg>
     </motion.div>
@@ -31,32 +31,34 @@ function AnimatedLogo() {
 export default function LandingPage() {
   return (
     <div className="flex flex-col gap-24 pb-20">
-      <section className="relative min-h-[80vh] flex flex-col items-center justify-center text-center gap-8">
+      <section className="relative min-h-[80vh] flex flex-col items-center justify-center text-center gap-8 overflow-hidden rounded-3xl bg-gradient-to-br from-[#EEF2FF] to-[#F0FDF4] -mx-6 -mt-6 px-6 pt-20">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/20 blur-[120px]" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-accent/20 blur-[120px]" />
+          <motion.div animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }} transition={{ duration: 6, repeat: Infinity }} className="absolute top-[15%] left-[10%] w-24 h-24 rounded-2xl bg-primary/10 blur-sm" />
+          <motion.div animate={{ y: [0, 15, 0], rotate: [0, -3, 0] }} transition={{ duration: 8, repeat: Infinity }} className="absolute top-[25%] right-[15%] w-32 h-32 rounded-full bg-accent/10 blur-sm" />
+          <motion.div animate={{ y: [0, -10, 0], scale: [1, 1.1, 1] }} transition={{ duration: 5, repeat: Infinity }} className="absolute bottom-[20%] left-[20%] w-20 h-20 rounded-xl bg-secondary/10 blur-sm" />
+          <motion.div animate={{ y: [0, 20, 0], rotate: [0, 8, 0] }} transition={{ duration: 7, repeat: Infinity }} className="absolute bottom-[30%] right-[25%] w-28 h-28 rounded-3xl bg-accent-warm/10 blur-sm" />
         </div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="relative z-10 max-w-4xl px-4">
           <div className="flex justify-center mb-8">
             <AnimatedLogo />
           </div>
-          <span className="px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-primary text-sm font-bold mb-6 inline-block backdrop-blur-md">
+          <span className="px-4 py-1.5 rounded-full bg-white border border-gray-200 text-primary text-sm font-bold mb-6 inline-block shadow-sm">
             Lanzamiento 2026 en Valencia
           </span>
-          <h1 className="text-5xl md:text-7xl font-bold font-clash tracking-tight leading-tight mb-6">
+          <h1 className="text-5xl md:text-7xl font-bold font-clash tracking-tight leading-tight mb-6 text-[#1A1A2E]">
             Encuentra tu piso.<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Encuentra tu gente.</span>
+            <span className="gradient-text">Encuentra tu gente.</span>
           </h1>
-          <h2 className="text-xl md:text-2xl text-accent font-clash font-semibold mb-8" style={{ textShadow: "0 0 30px rgba(99,102,241,0.3)" }}>
+          <h2 className="text-xl md:text-2xl text-[#6B7280] font-clash font-semibold mb-8">
             Tu piso ideal, con quien te entiende
           </h2>
-          <p className="text-lg md:text-xl text-text-muted max-w-2xl mx-auto mb-10 leading-relaxed">
+          <p className="text-lg md:text-xl text-[#6B7280] max-w-2xl mx-auto mb-10 leading-relaxed">
             La primera plataforma de vivienda universitaria en Valencia que combina matching inteligente, sostenibilidad y seguridad real.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/explore" className="px-8 py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-2xl transition-all hover:scale-105 shadow-[0_0_30px_rgba(99,102,241,0.4)]">Busco piso</Link>
-            <Link href="/listing/new" className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl border border-white/20 transition-all backdrop-blur-md">Tengo un piso</Link>
+            <Link href="/explore" className="px-8 py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-2xl transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(255,56,92,0.3)]">Busco piso</Link>
+            <Link href="/listing/new" className="px-8 py-4 bg-white hover:bg-gray-50 text-[#1A1A2E] font-bold rounded-2xl border border-gray-200 transition-all hover:-translate-y-0.5 hover:shadow-lg">Tengo un piso</Link>
           </div>
           <div className="mt-12 flex justify-center"><ODSRow /></div>
         </motion.div>
@@ -71,10 +73,10 @@ export default function LandingPage() {
           { icon: Sparkles, title: "Asistente IA", desc: "Chatbot experto que te ayuda a elegir el mejor barrio según tu presupuesto." },
           { icon: LayoutDashboard, title: "Data Dashboard", desc: "Analiza la evolución de precios y demanda en tiempo real por cada barrio." },
         ].map((f, i) => (
-          <motion.div key={i} whileHover={{ scale: 1.02 }} className="p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl hover:border-primary/50 transition-all group">
-            <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 group-hover:bg-primary/30 transition-colors"><f.icon className="w-6 h-6 text-primary" /></div>
-            <h3 className="text-xl font-bold font-clash mb-3">{f.title}</h3>
-            <p className="text-text-muted leading-relaxed">{f.desc}</p>
+          <motion.div key={i} whileHover={{ y: -6 }} transition={{ duration: 0.25 }} className="group rounded-2xl bg-white p-8 border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)] transition-all">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors"><f.icon className="w-6 h-6 text-primary" /></div>
+            <h3 className="text-lg font-bold font-clash mb-3 text-[#1A1A2E]">{f.title}</h3>
+            <p className="text-[#6B7280] leading-relaxed text-sm">{f.desc}</p>
           </motion.div>
         ))}
       </section>

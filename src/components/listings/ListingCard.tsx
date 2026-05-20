@@ -2,15 +2,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Leaf, MapPin, Heart } from 'lucide-react';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 import Link from 'next/link';
 import { useFavorites } from '@/hooks/useFavorites';
 import { FraudBadge } from '@/components/badges/FraudBadge';
-
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
 
 interface ListingCardProps {
   listing: {
@@ -36,81 +30,68 @@ export default function ListingCard({ listing }: ListingCardProps) {
   const [imgError, setImgError] = React.useState(false);
   const imageSrc = listing.images && listing.images.length > 0 && !imgError ? listing.images[0] : 'https://picsum.photos/seed/fallback/800/600';
 
+  const typeLabel = listing.type === 'room' ? 'Habitación' : listing.type === 'flat' ? 'Piso' : 'Estudio';
+
   return (
     <Link href={`/listing/${listing.id}`} className="block">
       <motion.div
-        whileHover={{ y: -5 }}
-        className="group relative bg-white/5 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-xl hover:border-primary/50 transition-all duration-300 cursor-pointer"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -4 }}
+        transition={{ duration: 0.25, ease: 'easeOut' }}
+        className="group relative overflow-hidden rounded-2xl bg-white border border-gray-100 transition-all duration-300 cursor-pointer shadow-[0_2px_16px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)]"
       >
-        {/* Image Section */}
-        <div className="relative h-56 w-full overflow-hidden bg-gray-800">
+        <div className="relative h-52 w-full overflow-hidden bg-gray-100">
           <img
             src={imageSrc}
             alt={listing.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             onError={() => setImgError(true)}
           />
 
-          {/* Heart Button */}
           <button
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleFavorite(listing.id); }}
-            className="absolute top-4 left-4 p-2 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-all duration-300 hover:scale-110 z-10"
+            className="absolute top-3 right-3 z-10 rounded-full bg-white/90 p-2 shadow-md transition-all duration-200 hover:scale-110 hover:bg-white"
           >
-            <Heart className={`w-5 h-5 transition-colors ${favorited ? 'fill-red-500 text-red-500' : 'text-white'}`} />
+            <Heart className={`w-4 h-4 transition-colors ${favorited ? 'fill-primary text-primary' : 'text-gray-400'}`} />
           </button>
 
-          {/* Badges Row */}
-          <div className="absolute top-4 right-4 flex flex-col gap-1.5 items-end">
-            <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-accent text-white text-xs font-bold shadow-lg">
-              <Leaf className="w-3 h-3" />
-              <span>{listing.ecoScore ?? 'N/A'}</span>
+          <div className="absolute bottom-3 left-3 flex items-center gap-2">
+            <div className="rounded-lg bg-white/95 px-2.5 py-1 text-xs font-bold text-[#1A1A2E] shadow-sm">
+              {listing.price}€/mes
             </div>
-            {listing.fraudScore && <FraudBadge score={listing.fraudScore} />}
+            <div className="flex items-center gap-1 rounded-lg bg-accent/90 px-2 py-1 text-xs font-semibold text-white shadow-sm">
+              <Leaf className="w-3 h-3" />
+              {listing.ecoScore}
+            </div>
           </div>
 
-          {/* Price Tag */}
-          <div className="absolute bottom-4 left-4 px-3 py-1 rounded-lg bg-primary text-white font-bold text-lg shadow-lg">
-            {listing.price ?? 0}€ <span className="text-xs font-normal opacity-80">/mes</span>
-          </div>
+          {listing.fraudScore && (
+            <div className="absolute bottom-3 right-3">
+              <FraudBadge score={listing.fraudScore} />
+            </div>
+          )}
         </div>
 
-        {/* Content Section */}
-        <div className="p-5 flex flex-col gap-3">
-          <div className="flex justify-between items-start">
-            <h3 className="font-bold text-lg font-clash group-hover:text-primary transition-colors truncate">
-              {listing.title ?? 'Sinu título'}
+        <div className="p-4 flex flex-col gap-2">
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="font-semibold text-[#1A1A2E] text-sm leading-tight line-clamp-1 group-hover:text-primary transition-colors">
+              {listing.title}
             </h3>
-            <span className="text-xs px-2 py-1 rounded-md bg-white/10 text-text-muted border border-white/10">
-              {listing.type ?? 'Habitación'}
+            <span className="shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-[#6B7280]">
+              {typeLabel}
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-text-muted text-sm">
-            <MapPin className="w-4 h-4 text-primary" />
-            <span>{listing.neighborhood ?? 'Valencia'}, Valencia</span>
+          <div className="flex items-center gap-1.5 text-[#6B7280] text-xs">
+            <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
+            <span>{listing.neighborhood}, Valencia</span>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 pt-3 border-t border-white/10">
-            <div className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-wider text-text-muted font-semibold">Dist. UV</span>
-              <span className="text-sm font-medium">{listing.distanceUV ?? 0} km</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-wider text-text-muted font-semibold">Dist. UPV</span>
-              <span className="text-sm font-medium">{listing.distanceUPV ?? 0} km</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-wider text-text-muted font-semibold">Dist. UEV</span>
-              <span className="text-sm font-medium">{listing.distanceUEV ?? listing.distanceUV ?? 0} km</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-wider text-text-muted font-semibold">Dist. UCV</span>
-              <span className="text-sm font-medium">{listing.distanceUCV ?? listing.distanceUV ?? 0} km</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-wider text-text-muted font-semibold">Dist. CEU</span>
-              <span className="text-sm font-medium">{listing.distanceCEU ?? listing.distanceUPV ?? 0} km</span>
-            </div>
+          <div className="flex items-center gap-3 pt-2 border-t border-gray-100">
+            <span className="text-[10px] text-[#6B7280]">UV <b className="text-[#1A1A2E]">{listing.distanceUV}km</b></span>
+            <span className="text-[10px] text-[#6B7280]">UPV <b className="text-[#1A1A2E]">{listing.distanceUPV}km</b></span>
+            {listing.distanceUEV && <span className="text-[10px] text-[#6B7280]">UEV <b className="text-[#1A1A2E]">{listing.distanceUEV}km</b></span>}
           </div>
         </div>
       </motion.div>

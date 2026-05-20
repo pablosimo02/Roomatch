@@ -52,7 +52,7 @@ export default function NeighborhoodComparator() {
              </div>
              <div className="p-6 rounded-2xl bg-white/5 border border-white/10 flex flex-col gap-2">
                 <span className="text-xs text-text-muted uppercase font-semibold">Sugerencia IA</span>
-                <span className="text-sm text-primary font-medium">"Ideal para estudiantes de la UV"</span>
+                <span className="text-sm text-primary font-medium">&quot;Ideal para estudiantes de la UV&quot;</span>
              </div>
           </div>
 
