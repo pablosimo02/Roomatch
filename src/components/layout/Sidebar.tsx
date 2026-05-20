@@ -4,38 +4,38 @@ import Link from 'next/link';
 
 const SIDEBAR_ITEMS = [
   { section: 'Marketplace', items: [
-    { href: '/explore', icon: Map, label: 'Marketplace', color: '#0EA5E9' },
-    { href: '/swipe', icon: Heart, label: 'Swipe Pisos', color: '#FF385C' },
-    { href: '/roommates', icon: User, label: 'Compañeros', color: '#F59E0B' },
-    { href: '/favorites', icon: Heart, label: 'Favoritos', color: '#EF4444' },
+    { href: '/explore', icon: Map, emoji: '🏠', label: 'Marketplace', color: '#0EA5E9' },
+    { href: '/swipe', icon: Heart, emoji: '🔍', label: 'Swipe Pisos', color: '#FF385C' },
+    { href: '/roommates', icon: User, emoji: '👥', label: 'Compañeros', color: '#F59E0B' },
+    { href: '/favorites', icon: Heart, emoji: '❤️', label: 'Favoritos', color: '#EF4444' },
   ]},
   { section: 'Analytics', items: [
-    { href: '/dashboard', icon: LayoutDashboard, label: 'Mercado', color: '#6366F1' },
-    { href: '/looker-dashboard', icon: BarChart3, label: 'Dashboard Looker', color: '#3B82F6' },
+    { href: '/dashboard', icon: LayoutDashboard, emoji: '📈', label: 'Mercado', color: '#6366F1' },
+    { href: '/looker-dashboard', icon: BarChart3, emoji: '📊', label: 'Dashboard Looker', color: '#3B82F6' },
   ]},
   { section: 'Comunidad', items: [
-    { href: '/chat', icon: MessageSquare, label: 'Mensajes', color: '#10B981' },
-    { href: '/social', icon: MessageCircle, label: 'Social', color: '#EC4899' },
-    { href: '/profile', icon: User, label: 'Mi Perfil', color: '#14B8A6' },
+    { href: '/chat', icon: MessageSquare, emoji: '💬', label: 'Mensajes', color: '#10B981' },
+    { href: '/social', icon: MessageCircle, emoji: '🌐', label: 'Social', color: '#EC4899' },
+    { href: '/profile', icon: User, emoji: '👤', label: 'Mi Perfil', color: '#14B8A6' },
   ]},
   { section: 'Premium', items: [
-    { href: '/premium', icon: Crown, label: 'Planes', color: '#8B5CF6' },
-    { href: '/settings', icon: Settings, label: 'Configuración', color: '#6B7280' },
+    { href: '/premium', icon: Crown, emoji: '👑', label: 'Planes', color: '#8B5CF6' },
+    { href: '/settings', icon: Settings, emoji: '⚙️', label: 'Configuración', color: '#6B7280' },
   ]},
 ];
 
-const SidebarItem = ({ href, icon: Icon, label, color, active = false }: { href: string; icon: React.ComponentType<{ className?: string; color?: string }>; label: string; color: string; active?: boolean }) => {
+const SidebarItem = ({ href, icon: Icon, emoji, label, color, active = false }: { href: string; icon: React.ComponentType<{ className?: string; color?: string }>; emoji: string; label: string; color: string; active?: boolean }) => {
   return (
     <Link
       href={href}
-      className="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 text-sm hover:translate-y-[-1px]"
+      className="flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-200 text-sm font-bold hover:translate-y-[-1px] hover:shadow-md"
       style={{
-        color: color,
-        backgroundColor: active ? `${color}18` : 'transparent',
-        fontWeight: active ? 600 : 400,
+        color: 'white',
+        backgroundColor: active ? color : color,
+        boxShadow: active ? `0 4px 12px ${color}40` : `0 2px 8px ${color}25`,
       }}
     >
-      <Icon className="w-4 h-4" color={color} />
+      <span className="text-base">{emoji}</span>
       <span>{label}</span>
     </Link>
   );
@@ -48,7 +48,7 @@ export default function Sidebar() {
         <div key={section.section} className="flex flex-col gap-1">
           <p className="px-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">{section.section}</p>
           {section.items.map(item => (
-            <SidebarItem key={item.href} href={item.href} icon={item.icon} label={item.label} color={item.color} />
+            <SidebarItem key={item.href} href={item.href} icon={item.icon} emoji={item.emoji} label={item.label} color={item.color} />
           ))}
         </div>
       ))}

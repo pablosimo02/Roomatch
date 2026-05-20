@@ -5,26 +5,27 @@ import { User, Search, Map, LayoutDashboard, Menu, X, Heart, BarChart3, Crown, M
 import { RooMatchLogo, RooMatchWordmark } from '@/components/branding/Logo';
 
 const NAV_ITEMS = [
-  { href: '/explore', icon: Map, label: 'Explore', color: '#0EA5E9' },
-  { href: '/swipe', icon: Map, label: 'Swipe', color: '#FF385C' },
-  { href: '/roommates', icon: User, label: 'Roommates', color: '#F59E0B' },
-  { href: '/dashboard', icon: LayoutDashboard, label: 'Insights', color: '#6366F1' },
-  { href: '/looker-dashboard', icon: BarChart3, label: 'Dashboard Looker', color: '#3B82F6' },
-  { href: '/social', icon: MessageCircle, label: 'Social', color: '#EC4899' },
-  { href: '/premium', icon: Crown, label: 'Premium', color: '#8B5CF6' },
+  { href: '/explore', icon: Map, emoji: '🏠', label: 'Explore', color: '#0EA5E9' },
+  { href: '/swipe', icon: Map, emoji: '🔍', label: 'Swipe', color: '#FF385C' },
+  { href: '/roommates', icon: User, emoji: '👥', label: 'Roommates', color: '#F59E0B' },
+  { href: '/dashboard', icon: LayoutDashboard, emoji: '📈', label: 'Insights', color: '#6366F1' },
+  { href: '/looker-dashboard', icon: BarChart3, emoji: '📊', label: 'Dashboard Looker', color: '#3B82F6' },
+  { href: '/social', icon: MessageCircle, emoji: '💬', label: 'Social', color: '#EC4899' },
+  { href: '/premium', icon: Crown, emoji: '👑', label: 'Premium', color: '#8B5CF6' },
 ];
 
-const NavItem = ({ href, icon: Icon, label, color, active = false }: { href: string; icon: React.ComponentType<{ className?: string; color?: string }>; label: string; color: string; active?: boolean }) => {
+const NavItem = ({ href, icon: Icon, emoji, label, color, active = false }: { href: string; icon: React.ComponentType<{ className?: string; color?: string }>; emoji: string; label: string; color: string; active?: boolean }) => {
   return (
     <Link
       href={href}
-      className="flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 hover:translate-y-[-1px]"
+      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-200 hover:translate-y-[-1px] hover:shadow-md"
       style={{
-        color: active ? color : color,
-        backgroundColor: active ? `${color}18` : 'transparent',
+        color: 'white',
+        backgroundColor: active ? color : color,
+        boxShadow: active ? `0 4px 12px ${color}40` : `0 2px 8px ${color}25`,
       }}
     >
-      <Icon className="w-4 h-4" color={color} />
+      <span className="text-sm">{emoji}</span>
       <span>{label}</span>
     </Link>
   );
@@ -43,7 +44,7 @@ export default function Navbar() {
 
         <div className="hidden xl:flex items-center gap-1">
           {NAV_ITEMS.map(item => (
-            <NavItem key={item.href} href={item.href} icon={item.icon} label={item.label} color={item.color} />
+            <NavItem key={item.href} href={item.href} icon={item.icon} emoji={item.emoji} label={item.label} color={item.color} />
           ))}
         </div>
       </div>
@@ -76,10 +77,10 @@ export default function Navbar() {
       {isOpen && (
         <div className="absolute top-16 left-0 right-0 p-4 bg-white border-b border-gray-100 shadow-lg flex flex-col gap-1 animate-in slide-in-from-top duration-200 max-h-[80vh] overflow-y-auto">
           {NAV_ITEMS.map(item => (
-            <NavItem key={item.href} href={item.href} icon={item.icon} label={item.label} color={item.color} />
+            <NavItem key={item.href} href={item.href} icon={item.icon} emoji={item.emoji} label={item.label} color={item.color} />
           ))}
-          <NavItem href="/favorites" icon={Heart} label="Favoritos" color="#EF4444" />
-          <NavItem href="/profile" icon={User} label="Perfil" color="#14B8A6" />
+          <NavItem href="/favorites" icon={Heart} emoji="❤️" label="Favoritos" color="#EF4444" />
+          <NavItem href="/profile" icon={User} emoji="👤" label="Perfil" color="#14B8A6" />
         </div>
       )}
     </nav>

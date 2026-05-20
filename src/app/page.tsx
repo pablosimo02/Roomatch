@@ -22,7 +22,7 @@ function AnimatedLogo() {
       style={{ transformStyle: "preserve-3d" }}
       className="inline-block"
     >
-      <svg width="140" height="140" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg width="170" height="170" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="g" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
             <stop stopColor="#FF385C" /><stop offset="1" stopColor="#10B981" />
