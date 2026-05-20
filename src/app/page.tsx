@@ -18,20 +18,26 @@ function AnimatedLogo() {
   return (
     <motion.div
       animate={{ rotateY: 360 }}
-      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+      transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
       style={{ transformStyle: "preserve-3d" }}
       className="inline-block"
     >
-      <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg width="140" height="140" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="g" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
             <stop stopColor="#FF385C" /><stop offset="1" stopColor="#10B981" />
           </linearGradient>
+          <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#FF385C" floodOpacity="0.3" />
+          </filter>
+          <linearGradient id="houseGrad" x1="40" y1="20" x2="40" y2="56" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#FFFFFF" /><stop offset="1" stopColor="#F0F0F0" />
+          </linearGradient>
         </defs>
-        <rect x="4" y="4" width="72" height="72" rx="20" fill="url(#g)" />
-        <path d="M40 20L24 34V56H34V44H46V56H56V34L40 20Z" fill="white" opacity="0.95" />
+        <rect x="2" y="2" width="76" height="76" rx="22" fill="url(#g)" filter="url(#shadow)" />
+        <path d="M40 20L24 34V56H34V44H46V56H56V34L40 20Z" fill="url(#houseGrad)" opacity="0.95" />
         <path d="M40 42C40 42 30 35 30 29C30 25.5 33 23 36 23C37.6 23 39 24 40 25C41 24 42.4 23 44 23C47 23 50 25.5 50 29C50 35 40 42 40 42Z" fill="#FF385C" opacity="0.9" />
-        <text x="40" y="64" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold" fontFamily="system-ui">R</text>
+        <text x="40" y="64" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold" fontFamily="system-ui">R</text>
       </svg>
     </motion.div>
   );
@@ -49,7 +55,7 @@ export default function LandingPage() {
         </div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="relative z-10 max-w-4xl px-4">
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-10">
             <AnimatedLogo />
           </div>
           <span className="px-4 py-1.5 rounded-full bg-white border border-gray-200 text-[#FF385C] text-sm font-bold mb-6 inline-block shadow-sm">
@@ -75,17 +81,17 @@ export default function LandingPage() {
 
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {FEATURES.map((f, i) => (
-          <motion.div key={i} whileHover={{ y: -6 }} transition={{ duration: 0.25 }} className="group rounded-2xl bg-white p-8 border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)] transition-all">
-            <div className="relative mb-6">
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center transition-all shadow-lg" style={{ backgroundColor: `${f.color}20`, boxShadow: `0 8px 24px ${f.color}25` }}>
-                <span className="text-3xl filter drop-shadow-sm">{f.emoji}</span>
+          <motion.div key={i} whileHover={{ y: -6, scale: 1.02 }} transition={{ duration: 0.25 }} className="group rounded-2xl p-8 transition-all shadow-lg hover:shadow-2xl" style={{ backgroundColor: f.color, boxShadow: `0 8px 30px ${f.color}50` }}>
+            <div className="flex items-center gap-4 mb-5">
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-white/20 backdrop-blur-sm shadow-inner">
+                <span className="text-4xl drop-shadow-md">{f.emoji}</span>
               </div>
-              <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: f.color }}>
-                <f.icon className="w-3 h-3 text-white" strokeWidth={2.5} />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/25">
+                <f.icon className="w-5 h-5 text-white" strokeWidth={2.5} />
               </div>
             </div>
-            <h3 className="text-xl font-bold font-clash mb-3 text-[#1A1A2E]" style={{ fontWeight: 800 }}>{f.title}</h3>
-            <p className="text-[#6B7280] leading-relaxed text-base">{f.desc}</p>
+            <h3 className="text-xl font-bold font-clash mb-3 text-white" style={{ fontWeight: 800 }}>{f.title}</h3>
+            <p className="text-white/85 leading-relaxed text-base">{f.desc}</p>
           </motion.div>
         ))}
       </section>
