@@ -85,7 +85,7 @@ export default function SwipePage() {
             className="absolute inset-0 rounded-3xl overflow-hidden bg-white shadow-[0_4px_20px_rgba(0,0,0,0.1)] cursor-grab active:cursor-grabbing"
           >
             <img src={currentListing.images[0] || 'https://picsum.photos/seed/fallback/800/600'} alt={currentListing.title} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = 'https://picsum.photos/seed/fallback/800/600'; }} />
-            <div className={`absolute inset-0 bg-gradient-to-t ${gradient} via-transparent to-transparent opacity-60`} />
+            <div className={`absolute inset-0 bg-gradient-to-t ${gradient} via-transparent to-transparent opacity-35`} />
             <div className="absolute bottom-0 left-0 right-0 p-6">
               <div className="flex justify-between items-start mb-2">
                 <h2 className="text-2xl font-bold text-white">{currentListing.title}</h2>

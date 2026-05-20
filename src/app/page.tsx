@@ -5,6 +5,15 @@ import { Map, User, Leaf, ShieldCheck, Sparkles, LayoutDashboard } from 'lucide-
 import Link from 'next/link';
 import { ODSRow } from '@/components/badges/ODSBadges';
 
+const FEATURES = [
+  { icon: Map, title: "Marketplace Inteligente", desc: "Filtra por barrio, precio y EcoScore. Encuentra la ubicación perfecta cerca de tu universidad.", color: '#0EA5E9' },
+  { icon: User, title: "Matching de Compañeros", desc: "Swipea perfiles basados en hábitos de limpieza, horarios y valores.", color: '#F59E0B' },
+  { icon: Leaf, title: "Sostenibilidad Real", desc: "Calculamos el EcoScore de cada vivienda basándonos en transporte, energía y huella de CO2.", color: '#10B981' },
+  { icon: ShieldCheck, title: "Anti-Fraude IA", desc: "Nuestra IA analiza cada anuncio para detectar estafas y verificar propietarios.", color: '#6366F1' },
+  { icon: Sparkles, title: "Asistente IA", desc: "Chatbot experto que te ayuda a elegir el mejor barrio según tu presupuesto.", color: '#EC4899' },
+  { icon: LayoutDashboard, title: "Data Dashboard", desc: "Analiza la evolución de precios y demanda en tiempo real por cada barrio.", color: '#3B82F6' },
+];
+
 function AnimatedLogo() {
   return (
     <motion.div
@@ -33,17 +42,17 @@ export default function LandingPage() {
     <div className="flex flex-col gap-24 pb-20">
       <section className="relative min-h-[80vh] flex flex-col items-center justify-center text-center gap-8 overflow-hidden rounded-3xl bg-gradient-to-br from-[#EEF2FF] to-[#F0FDF4] -mx-6 -mt-6 px-6 pt-20">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }} transition={{ duration: 6, repeat: Infinity }} className="absolute top-[15%] left-[10%] w-24 h-24 rounded-2xl bg-primary/10 blur-sm" />
-          <motion.div animate={{ y: [0, 15, 0], rotate: [0, -3, 0] }} transition={{ duration: 8, repeat: Infinity }} className="absolute top-[25%] right-[15%] w-32 h-32 rounded-full bg-accent/10 blur-sm" />
-          <motion.div animate={{ y: [0, -10, 0], scale: [1, 1.1, 1] }} transition={{ duration: 5, repeat: Infinity }} className="absolute bottom-[20%] left-[20%] w-20 h-20 rounded-xl bg-secondary/10 blur-sm" />
-          <motion.div animate={{ y: [0, 20, 0], rotate: [0, 8, 0] }} transition={{ duration: 7, repeat: Infinity }} className="absolute bottom-[30%] right-[25%] w-28 h-28 rounded-3xl bg-accent-warm/10 blur-sm" />
+          <motion.div animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }} transition={{ duration: 6, repeat: Infinity }} className="absolute top-[15%] left-[10%] w-24 h-24 rounded-2xl bg-[#FF385C]/10 blur-sm" />
+          <motion.div animate={{ y: [0, 15, 0], rotate: [0, -3, 0] }} transition={{ duration: 8, repeat: Infinity }} className="absolute top-[25%] right-[15%] w-32 h-32 rounded-full bg-[#10B981]/10 blur-sm" />
+          <motion.div animate={{ y: [0, -10, 0], scale: [1, 1.1, 1] }} transition={{ duration: 5, repeat: Infinity }} className="absolute bottom-[20%] left-[20%] w-20 h-20 rounded-xl bg-[#0EA5E9]/10 blur-sm" />
+          <motion.div animate={{ y: [0, 20, 0], rotate: [0, 8, 0] }} transition={{ duration: 7, repeat: Infinity }} className="absolute bottom-[30%] right-[25%] w-28 h-28 rounded-3xl bg-[#F59E0B]/10 blur-sm" />
         </div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="relative z-10 max-w-4xl px-4">
           <div className="flex justify-center mb-8">
             <AnimatedLogo />
           </div>
-          <span className="px-4 py-1.5 rounded-full bg-white border border-gray-200 text-primary text-sm font-bold mb-6 inline-block shadow-sm">
+          <span className="px-4 py-1.5 rounded-full bg-white border border-gray-200 text-[#FF385C] text-sm font-bold mb-6 inline-block shadow-sm">
             Lanzamiento 2026 en Valencia
           </span>
           <h1 className="text-5xl md:text-7xl font-bold font-clash tracking-tight leading-tight mb-6 text-[#1A1A2E]">
@@ -57,7 +66,7 @@ export default function LandingPage() {
             La primera plataforma de vivienda universitaria en Valencia que combina matching inteligente, sostenibilidad y seguridad real.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/explore" className="px-8 py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-2xl transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(255,56,92,0.3)]">Busco piso</Link>
+            <Link href="/explore" className="px-8 py-4 bg-[#FF385C] hover:bg-[#E31C5F] text-white font-bold rounded-2xl transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(255,56,92,0.3)]">Busco piso</Link>
             <Link href="/listing/new" className="px-8 py-4 bg-white hover:bg-gray-50 text-[#1A1A2E] font-bold rounded-2xl border border-gray-200 transition-all hover:-translate-y-0.5 hover:shadow-lg">Tengo un piso</Link>
           </div>
           <div className="mt-12 flex justify-center"><ODSRow /></div>
@@ -65,16 +74,11 @@ export default function LandingPage() {
       </section>
 
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {[
-          { icon: Map, title: "Marketplace Inteligente", desc: "Filtra por barrio, precio y EcoScore. Encuentra la ubicación perfecta cerca de tu universidad." },
-          { icon: User, title: "Matching de Compañeros", desc: "Swipea perfiles basados en hábitos de limpieza, horarios y valores." },
-          { icon: Leaf, title: "Sostenibilidad Real", desc: "Calculamos el EcoScore de cada vivienda basándonos en transporte, energía y huella de CO2." },
-          { icon: ShieldCheck, title: "Anti-Fraude IA", desc: "Nuestra IA analiza cada anuncio para detectar estafas y verificar propietarios." },
-          { icon: Sparkles, title: "Asistente IA", desc: "Chatbot experto que te ayuda a elegir el mejor barrio según tu presupuesto." },
-          { icon: LayoutDashboard, title: "Data Dashboard", desc: "Analiza la evolución de precios y demanda en tiempo real por cada barrio." },
-        ].map((f, i) => (
+        {FEATURES.map((f, i) => (
           <motion.div key={i} whileHover={{ y: -6 }} transition={{ duration: 0.25 }} className="group rounded-2xl bg-white p-8 border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)] transition-all">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors"><f.icon className="w-6 h-6 text-primary" /></div>
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-colors" style={{ backgroundColor: `${f.color}15` }}>
+              <f.icon className="w-6 h-6" color={f.color} />
+            </div>
             <h3 className="text-lg font-bold font-clash mb-3 text-[#1A1A2E]">{f.title}</h3>
             <p className="text-[#6B7280] leading-relaxed text-sm">{f.desc}</p>
           </motion.div>
