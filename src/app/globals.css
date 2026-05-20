@@ -21,7 +21,7 @@
   --gradient-brand: linear-gradient(135deg, #FF385C 0%, #0EA5E9 50%, #10B981 100%);
   --glow-color: rgba(255, 56, 92, 0.25);
 
-  --background: #F7F8FC;
+  --background: #C8F4FF;
   --foreground: #1A1A2E;
 }
 
@@ -44,7 +44,7 @@
 }
 
 body {
-  background: #F7F8FC;
+  background: #C8F4FF;
   color: var(--text-primary);
   font-family: var(--font-jakarta), sans-serif;
 }

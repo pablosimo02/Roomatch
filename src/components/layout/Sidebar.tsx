@@ -1,27 +1,37 @@
 import React from 'react';
 import { Map, User, MessageSquare, LayoutDashboard, Settings, Heart, BarChart3, MessageCircle, Crown } from 'lucide-react';
 import Link from 'next/link';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+const SIDEBAR_COLORS: Record<string, { color: string; bg: string }> = {
+  '/explore': { color: '#0EA5E9', bg: '#0EA5E915' },
+  '/swipe': { color: '#FF385C', bg: '#FF385C15' },
+  '/roommates': { color: '#F59E0B', bg: '#F59E0B15' },
+  '/dashboard': { color: '#6366F1', bg: '#6366F115' },
+  '/looker-dashboard': { color: '#3B82F6', bg: '#3B82F615' },
+  '/social': { color: '#EC4899', bg: '#EC489915' },
+  '/premium': { color: '#8B5CF6', bg: '#8B5CF615' },
+  '/chat': { color: '#10B981', bg: '#10B98115' },
+  '/favorites': { color: '#EF4444', bg: '#EF444415' },
+  '/profile': { color: '#14B8A6', bg: '#14B8A615' },
+};
 
-const SidebarItem = ({ href, icon: Icon, label, active = false }: { href: string; icon: React.ComponentType<{ className?: string }>; label: string; active?: boolean }) => (
-  <Link
-    href={href}
-    className={cn(
-      "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 text-sm",
-      active
-        ? "bg-primary/10 text-primary font-semibold"
-        : "text-[#6B7280] hover:bg-gray-100 hover:text-[#1A1A2E]"
-    )}
-  >
-    <Icon className={cn("w-4 h-4", active ? "text-primary" : "")} />
-    <span>{label}</span>
-  </Link>
-);
+const SidebarItem = ({ href, icon: Icon, label, active = false }: { href: string; icon: React.ComponentType<{ className?: string; color?: string }>; label: string; active?: boolean }) => {
+  const c = SIDEBAR_COLORS[href] || { color: '#6B7280', bg: 'transparent' };
+  return (
+    <Link
+      href={href}
+      className="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 text-sm hover:translate-y-[-1px]"
+      style={{
+        color: active ? c.color : '#6B7280',
+        backgroundColor: active ? c.bg : 'transparent',
+        fontWeight: active ? 600 : 400,
+      }}
+    >
+      <Icon className="w-4 h-4" color={active ? c.color : undefined} />
+      <span>{label}</span>
+    </Link>
+  );
+};
 
 export default function Sidebar() {
   return (
@@ -53,10 +63,10 @@ export default function Sidebar() {
         <SidebarItem href="/settings" icon={Settings} label="Configuración" />
       </div>
 
-      <div className="mt-auto p-4 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20">
+      <div className="mt-auto p-4 rounded-2xl bg-gradient-to-br from-[#FF385C]/10 to-[#0EA5E9]/10 border border-[#FF385C]/20">
         <p className="text-sm font-semibold text-[#1A1A2E] mb-1">Premium</p>
         <p className="text-xs text-[#6B7280] mb-3">Desbloquea likes ilimitados y la IA de matching.</p>
-        <button className="w-full py-2 bg-primary hover:bg-primary-dark text-white text-xs font-bold rounded-lg transition-colors">
+        <button className="w-full py-2 bg-[#FF385C] hover:bg-[#E31C5F] text-white text-xs font-bold rounded-lg transition-colors">
           Actualizar
         </button>
       </div>
