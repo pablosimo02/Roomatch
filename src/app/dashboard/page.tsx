@@ -1,5 +1,6 @@
 "use client";
 import React from 'react';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { TrendingUp, Map as MapIcon, Leaf, Users, AlertCircle, Sparkles} from 'lucide-react';
 import {
@@ -13,6 +14,11 @@ import { ODSCard } from '@/components/badges/ODSBadges';
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+const NoSSR = dynamic(
+  () => Promise.resolve(({ children }: { children: React.ReactNode }) => <>{children}</>),
+  { ssr: false }
+);
 
 interface KPICardProps {
   title: string;
@@ -93,18 +99,20 @@ export default function DashboardPage() {
             <TrendingUp className="w-5 h-5 text-primary" /> Evolución Precios (Valencia)
           </h3>
           <div className="h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={priceHistory}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
-                <XAxis dataKey="year" stroke="#94A3B8" fontSize={12} />
-                <YAxis stroke="#94A3B8" fontSize={12} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#13131A', borderColor: '#ffffff20', color: '#F8FAFC' }}
-                  itemStyle={{ color: '#6366F1' }}
-                />
-                <Line type="monotone" dataKey="price" stroke="#6366F1" strokeWidth={3} dot={{ r: 4, fill: '#6366F1' }} />
-              </LineChart>
-            </ResponsiveContainer>
+            <NoSSR>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={priceHistory}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
+                  <XAxis dataKey="year" stroke="#94A3B8" fontSize={12} />
+                  <YAxis stroke="#94A3B8" fontSize={12} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#13131A', borderColor: '#ffffff20', color: '#F8FAFC' }}
+                    itemStyle={{ color: '#6366F1' }}
+                  />
+                  <Line type="monotone" dataKey="price" stroke="#6366F1" strokeWidth={3} dot={{ r: 4, fill: '#6366F1' }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </NoSSR>
           </div>
           <p className="text-xs text-white/40">Evolución del precio medio de habitación en Valencia desde 2020. Fuente: INE + datos propios.</p>
         </div>
@@ -114,21 +122,23 @@ export default function DashboardPage() {
             <MapIcon className="w-5 h-5 text-accent" /> Precio Medio por Barrio
           </h3>
           <div className="h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={neighborhoodPrices}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
-                <XAxis dataKey="name" stroke="#94A3B8" fontSize={12} />
-                <YAxis stroke="#94A3B8" fontSize={12} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#13131A', borderColor: '#ffffff20', color: '#F8FAFC' }}
-                />
-                <Bar dataKey="price" radius={[4, 4, 0, 0]}>
-                  {neighborhoodPrices.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            <NoSSR>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={neighborhoodPrices}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
+                  <XAxis dataKey="name" stroke="#94A3B8" fontSize={12} />
+                  <YAxis stroke="#94A3B8" fontSize={12} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#13131A', borderColor: '#ffffff20', color: '#F8FAFC' }}
+                  />
+                  <Bar dataKey="price" radius={[4, 4, 0, 0]}>
+                    {neighborhoodPrices.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </NoSSR>
           </div>
           <p className="text-xs text-white/40">Comparativa de precios medios por barrio. Ruzafa y El Carmen son los más caros.</p>
         </div>
@@ -140,22 +150,24 @@ export default function DashboardPage() {
             <Leaf className="w-5 h-5 text-accent" /> Ahorro de CO2 (kg/mes)
           </h3>
           <div className="h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={co2Savings}>
-                <defs>
-                  <linearGradient id="colorS" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="month" stroke="#94A3B8" fontSize={12} />
-                <YAxis stroke="#94A3B8" fontSize={12} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#13131A', borderColor: '#ffffff20', color: '#F8FAFC' }}
-                />
-                <Area type="monotone" dataKey="savings" stroke="#10B981" fillOpacity={1} fill="url(#colorS)" />
-              </AreaChart>
-            </ResponsiveContainer>
+            <NoSSR>
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={co2Savings}>
+                  <defs>
+                    <linearGradient id="colorS" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10B981" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="month" stroke="#94A3B8" fontSize={12} />
+                  <YAxis stroke="#94A3B8" fontSize={12} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#13131A', borderColor: '#ffffff20', color: '#F8FAFC' }}
+                  />
+                  <Area type="monotone" dataKey="savings" stroke="#10B981" fillOpacity={1} fill="url(#colorS)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </NoSSR>
           </div>
           <p className="text-xs text-white/40">Ahorro acumulado de CO2 gracias a la optimización de rutas y transporte compartido.</p>
         </div>
