@@ -16,8 +16,17 @@ const clashDisplay = Syne({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://roomatch-tawny.vercel.app"),
   title: "RooMatch | Encuentra tu piso. Encuentra tu gente.",
   description: "La plataforma de alojamiento universitaria definitiva en Valencia.",
+  openGraph: {
+    title: "RooMatch | Encuentra tu piso. Encuentra tu gente.",
+    description: "La plataforma de alojamiento universitaria definitiva en Valencia.",
+    url: "https://roomatch-tawny.vercel.app",
+    siteName: "RooMatch",
+    locale: "es_ES",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
