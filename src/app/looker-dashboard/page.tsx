@@ -3,11 +3,40 @@ import React, { useRef, useEffect, useState } from "react";
 import { Maximize2, Minimize2, Database, Globe, TrendingUp, Users } from "lucide-react";
 import { motion } from "framer-motion";
 
+type KPICardProps = {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
+  color: string;
+};
+
+function KPICard({ icon: Icon, label, value, color }: KPICardProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col gap-1 rounded-xl bg-white border border-gray-100 p-5 shadow-[0_2px_12px_rgba(0,0,0,0.06)]"
+    >
+      <div className="flex items-center gap-2 mb-1">
+        <div className={`p-2 rounded-lg ${color}`}>
+          <Icon className="w-4 h-4 text-white" />
+        </div>
+        <span className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">{label}</span>
+      </div>
+      <span className="text-2xl font-bold font-clash text-[#1A1A2E]">{value}</span>
+    </motion.div>
+  );
+}
+
 export default function LookerDashboardPage() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [iframeError, setIframeError] = useState(false);
+
+  const lookerUrl = "https://lookerstudio.google.com/embed/reporting/e0233868-e714-4020-aaa5-6eead7d376c2/page/HRHyF?rm=minimal";
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 50);
@@ -35,22 +64,6 @@ export default function LookerDashboardPage() {
       console.error("Fullscreen error:", err);
     }
   };
-
-  const KPICard = ({ icon: Icon, label, value, color }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string; color: string }) => (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col gap-1 rounded-xl bg-white border border-gray-100 p-5 shadow-[0_2px_12px_rgba(0,0,0,0.06)]"
-    >
-      <div className="flex items-center gap-2 mb-1">
-        <div className={`p-2 rounded-lg ${color}`}>
-          <Icon className="w-4 h-4 text-white" />
-        </div>
-        <span className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">{label}</span>
-      </div>
-      <span className="text-2xl font-bold font-clash text-[#1A1A2E]">{value}</span>
-    </motion.div>
-  );
 
   return (
     <div
@@ -96,15 +109,39 @@ export default function LookerDashboardPage() {
             <h3 className="text-sm font-semibold text-[#1A1A2E]">Visualización de datos</h3>
             <span className="text-xs text-[#6B7280]">Fuente: Looker Studio</span>
           </div>
-          <iframe
-            ref={iframeRef}
-            className="w-full border-0"
-            style={{ width: "100%", height: "70vh", border: 0 }}
-            src="https://datastudio.google.com/embed/reporting/e0233868-e714-4020-aaa5-6eead7d376c2/page/HRHyF"
-            frameBorder="0"
-            allowFullScreen
-            sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms allow-downloads"
-          />
+          <div className="relative" style={{ minHeight: "70vh" }}>
+            {!iframeLoaded && !iframeError ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-50 text-sm text-[#6B7280]">
+                Cargando visualizaciones...
+              </div>
+            ) : null}
+            {iframeError ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gray-50 p-6 text-center">
+                <p className="text-sm text-[#6B7280]">No se pudo cargar el dashboard embebido.</p>
+                <a
+                  href={lookerUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:opacity-90"
+                >
+                  Abrir dashboard en nueva pestaña
+                </a>
+              </div>
+            ) : null}
+            <iframe
+              ref={iframeRef}
+              className="w-full border-0"
+              style={{ width: "100%", height: "70vh", border: 0 }}
+              src={lookerUrl}
+              frameBorder="0"
+              allowFullScreen
+              onLoad={() => setIframeLoaded(true)}
+              onError={() => {
+                setIframeError(true);
+                setIframeLoaded(false);
+              }}
+            />
+          </div>
           <div className="px-5 py-3 border-t border-gray-100 bg-gray-50">
             <p className="text-xs text-[#6B7280]">
               Leyenda: Los gráficos muestran la evolución de precios, demanda por barrio, distribución de EcoScore y métricas de sostenibilidad del mercado de alquiler universitario en Valencia.
