@@ -3,27 +3,105 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Home, ShieldCheck, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { z } from 'zod';
+
+const ListingFormSchema = z.object({
+  title: z
+    .string()
+    .min(3, "El titulo debe tener al menos 3 caracteres")
+    .max(120, "El titulo no puede exceder 120 caracteres")
+    .regex(/^[a-zA-Z0-9\sáéíóúñüÁÉÍÓÚÑÜ.,:;\-!?¿¡'"()\/]+$/, "El titulo contiene caracteres no validos"),
+  price: z
+    .number()
+    .int("El precio debe ser un numero entero")
+    .min(50, "El precio minimo es 50EUR")
+    .max(5000, "El precio maximo es 5000EUR"),
+  neighborhood: z.enum(["Ruzafa", "Benimaclet", "El Carmen", "Campanar", "Patraix", "Algiros"]),
+});
+
+function sanitizeInput(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;")
+    .trim()
+    .slice(0, 120);
+}
+
+function validatePrice(value: string): number {
+  const num = Number(value);
+  if (isNaN(num) || num < 0) return 0;
+  if (num > 10000) return 10000;
+  return Math.floor(num);
+}
 
 export default function NewListingPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     title: '',
     price: '',
     neighborhood: 'Ruzafa',
   });
 
-  const handlePublish = async () => {
-    setIsSubmitting(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    setIsSuccess(true);
+  const handleTitleChange = (value: string) => {
+    setFormData({ ...formData, title: sanitizeInput(value) });
+    if (errors.title) setErrors({ ...errors, title: '' });
+  };
 
-    setTimeout(() => {
-      router.push('/explore');
-    }, 2000);
+  const handlePriceChange = (value: string) => {
+    setFormData({ ...formData, price: String(validatePrice(value)) });
+    if (errors.price) setErrors({ ...errors, price: '' });
+  };
+
+  const handlePublish = async () => {
+    const priceNum = Number(formData.price);
+    const validation = ListingFormSchema.safeParse({
+      title: formData.title,
+      price: priceNum,
+      neighborhood: formData.neighborhood,
+    });
+
+    if (!validation.success) {
+      const fieldErrors: Record<string, string> = {};
+      validation.error.issues.forEach((err) => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0] as string] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
+    setIsSubmitting(true);
+    setErrors({});
+
+    try {
+      const token = localStorage.getItem("roomatch_token");
+      const response = await fetch("/api/listings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(validation.data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al publicar");
+      }
+
+      setIsSuccess(true);
+      setTimeout(() => router.push('/explore'), 2000);
+    } catch {
+      setErrors({ submit: "Error al publicar. Intentalo de nuevo." });
+    }
+
+    setIsSubmitting(false);
   };
 
   if (isSuccess) {
@@ -32,7 +110,7 @@ export default function NewListingPage() {
         <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center animate-bounce">
           <CheckCircle2 className="w-10 h-10 text-emerald-500" />
         </div>
-        <h1 className="text-4xl font-bold font-clash">¡Anuncio Publicado!</h1>
+        <h1 className="text-4xl font-bold font-clash">Anuncio Publicado!</h1>
         <p className="text-text-muted max-w-md">Tu vivienda ahora es visible para miles de estudiantes en Valencia. Hemos optimizado tu anuncio con IA.</p>
         <button onClick={() => router.push('/explore')} className="px-8 py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary-dark transition-all">
           Ver mi anuncio
@@ -45,7 +123,7 @@ export default function NewListingPage() {
     <div className="flex flex-col gap-8 max-w-4xl mx-auto p-6">
       <div className="flex flex-col gap-2">
         <h1 className="text-4xl font-bold font-clash">Publicar Anuncio</h1>
-        <p className="text-text-muted">Sube tu habitación o piso y encuentra al compañero ideal.</p>
+        <p className="text-text-muted">Sube tu habitacion o piso y encuentra al companero ideal.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -55,50 +133,58 @@ export default function NewListingPage() {
           </h2>
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-semibold text-text-muted uppercase">Título del anuncio</label>
+              <label className="text-xs font-semibold text-text-muted uppercase">Titulo del anuncio</label>
               <input
-                className="bg-white/10 border border-white/20 rounded-xl px-4 py-2 outline-none focus:border-primary transition-all"
-                placeholder="Ej: Habitación luminosa en Ruzafa"
+                className={`bg-white/10 border rounded-xl px-4 py-2 outline-none focus:border-primary transition-all ${errors.title ? 'border-red-500' : 'border-white/20'}`}
+                placeholder="Ej: Habitacion luminosa en Ruzafa"
                 value={formData.title}
-                onChange={(e) => setFormData({...formData, title: e.target.value})}
+                onChange={(e) => handleTitleChange(e.target.value)}
+                maxLength={120}
               />
+              {errors.title && <span className="text-red-400 text-xs">{errors.title}</span>}
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-semibold text-text-muted uppercase">Precio (€/mes)</label>
+              <label className="text-xs font-semibold text-text-muted uppercase">Precio (EUR/mes)</label>
               <input
                 type="number"
-                className="bg-white/10 border border-white/20 rounded-xl px-4 py-2 outline-none focus:border-primary transition-all"
+                className={`bg-white/10 border rounded-xl px-4 py-2 outline-none focus:border-primary transition-all ${errors.price ? 'border-red-500' : 'border-white/20'}`}
                 placeholder="450"
                 value={formData.price}
-                onChange={(e) => setFormData({...formData, price: e.target.value})}
+                onChange={(e) => handlePriceChange(e.target.value)}
+                min="50"
+                max="5000"
               />
+              {errors.price && <span className="text-red-400 text-xs">{errors.price}</span>}
             </div>
             <div className="flex flex-col gap-2">
               <label className="text-xs font-semibold text-text-muted uppercase">Barrio</label>
               <select
                 className="bg-white/10 border border-white/20 rounded-xl px-4 py-2 outline-none focus:border-primary transition-all"
                 value={formData.neighborhood}
-                onChange={(e) => setFormData({...formData, neighborhood: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
               >
                 <option>Ruzafa</option>
                 <option>Benimaclet</option>
                 <option>El Carmen</option>
                 <option>Campanar</option>
+                <option>Patraix</option>
+                <option>Algirós</option>
               </select>
             </div>
           </div>
+          {errors.submit && <span className="text-red-400 text-xs">{errors.submit}</span>}
         </div>
 
         <div className="p-8 rounded-3xl bg-gradient-to-br from-primary/20 via-transparent to-accent/20 border border-white/10 backdrop-blur-xl flex flex-col gap-6">
           <h2 className="text-xl font-bold flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-primary" /> Asistencia de IA
           </h2>
-          <p className="text-sm text-text-muted">Nuestra IA analizará tu descripción para optimizar la visibilidad y detectar posibles errores.</p>
+          <p className="text-sm text-text-muted">Nuestra IA analizara tu descripcion para optimizar la visibilidad y detectar posibles errores.</p>
           <button className="p-4 rounded-2xl bg-primary text-white font-bold hover:bg-primary-dark transition-all flex items-center justify-center gap-2">
-            <Plus className="w-5 h-5" /> Generar descripción con IA
+            <Plus className="w-5 h-5" /> Generar descripcion con IA
           </button>
-          <div className="p-4 rounded-2 la bg-white/10 border border-white/10 text-xs text-text-muted italic">
-            Tip: Los anuncios con fotos reales y EcoScore detallado reciben un 40% más de visitas.
+          <div className="p-4 rounded-2xl bg-white/10 border border-white/10 text-xs text-text-muted italic">
+            Tip: Los anuncios con fotos reales y EcoScore detallado reciben un 40% mas de visitas.
           </div>
         </div>
       </div>
@@ -107,7 +193,7 @@ export default function NewListingPage() {
         <button className="px-6 py-3 rounded-xl bg-white/10 border border-white/20 text-white font-semibold hover:bg-white/20 transition-all">Cancelar</button>
         <button
           onClick={handlePublish}
-          disabled={isSubmitting}
+          disabled={isSubmitting || !formData.title || !formData.price}
           className="px-6 py-3 rounded-xl bg-primary text-white font-bold hover:bg-primary-dark transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
         >
           {isSubmitting ? 'Publicando...' : 'Publicar Anuncio'}

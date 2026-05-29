@@ -1,12 +1,21 @@
 "use client";
 import React from 'react';
-import { Send, Paperclip, Smile, MoreVertical, ArrowLeft } from 'lucide-react';
+import { Send, Paperclip, Smile, MoreVertical } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { generateAISimulatedResponse } from '@/lib/ai-generator';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+function sanitizeInput(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;")
+    .trim();
 }
 
 interface MessageBubbleProps {
@@ -47,30 +56,57 @@ export default function ChatWindow({ userId }: { userId: string }) {
     { text: 'Perfecto, te mando la ubicación exacta.', isMe: true, timestamp: '10:36 AM' },
   ]);
 
-  const handleSendMessage = () => {
-    if (!message.trim()) return;
+  const handleSendMessage = async () => {
+    const trimmed = message.trim();
+    if (!trimmed || trimmed.length > 500) return;
 
+    const sanitizedMessage = sanitizeInput(trimmed);
     const now = new Date();
     const timestamp = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    const userMsg = { text: message, isMe: true, timestamp };
+    const userMsg = { text: sanitizedMessage, isMe: true, timestamp };
     setMessages(prev => [...prev, userMsg]);
     setMessage('');
 
-    setTimeout(() => {
-      const aiResponseText = generateAISimulatedResponse(message);
+    try {
+      const token = localStorage.getItem("roomatch_token");
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ message: sanitizedMessage, receiverId: userId }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const aiMsg = {
+          text: data.data?.message || "Disculpa, no puedo responder ahora.",
+          isMe: false,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        };
+        setMessages(prev => [...prev, aiMsg]);
+      } else {
+        throw new Error("API error");
+      }
+    } catch {
+      const fallbackResponses = [
+        "¡Hola! Sí, la habitación sigue disponible. ¿Te gustaría venir a verla esta semana?",
+        "Me parece genial. ¿En qué horario te vendría mejor quedar?",
+        "Tengo un perfil muy orientado al estudio, así que busco a alguien tranquilo.",
+      ];
       const aiMsg = {
-        text: aiResponseText,
+        text: fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)],
         isMe: false,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages(prev => [...prev, aiMsg]);
-    }, 1500);
+    }
   };
 
   return (
     <div className="flex flex-col h-full max-w-4xl mx-auto rounded-3xl overflow-hidden bg-bg-card border border-white/10 shadow-2xl">
-      {/* Header */}
       <div className="p-4 border-b border-white/10 flex items-center justify-between backdrop-blur-md bg-white/5">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-primary/20 overflow-hidden">
@@ -88,14 +124,12 @@ export default function ChatWindow({ userId }: { userId: string }) {
         </button>
       </div>
 
-      {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-2">
         {messages.map((msg, i) => (
           <MessageBubble key={i} message={msg} />
         ))}
       </div>
 
-      {/* Input Area */}
       <div className="p-4 border-t border-white/10 backdrop-blur-md bg-white/5">
         <div className="flex items-center gap-3 bg-white/10 border border-white/20 rounded-2xl px-4 py-2 focus-within:border-primary transition-all">
           <button className="text-text-muted hover:text-white transition-colors">
@@ -107,6 +141,7 @@ export default function ChatWindow({ userId }: { userId: string }) {
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
             placeholder="Escribe un mensaje..."
+            maxLength={500}
             className="flex-1 bg-transparent border-none outline-none text-sm text-text-primary py-2"
           />
           <button className="text-text-muted hover:text-white transition-colors">
@@ -114,7 +149,8 @@ export default function ChatWindow({ userId }: { userId: string }) {
           </button>
           <button
             onClick={handleSendMessage}
-            className="p-2 bg-primary rounded-xl text-white hover:bg-primary-dark transition-all shadow-lg shadow-primary/20"
+            disabled={!message.trim() || message.length > 500}
+            className="p-2 bg-primary rounded-xl text-white hover:bg-primary-dark transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
           >
             <Send className="w-4 h-4" />
           </button>

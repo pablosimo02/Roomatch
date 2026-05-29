@@ -48,11 +48,7 @@ function KPICard({ title, value, change, icon: Icon, trend }: KPICardProps) {
 }
 
 export default function DashboardPage() {
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
+  const [mounted, setMounted] = React.useState(() => typeof window !== 'undefined');
 
   const priceHistory = [
     { year: '2020', price: 320 },

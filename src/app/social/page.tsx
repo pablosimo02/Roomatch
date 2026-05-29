@@ -89,7 +89,7 @@ export default function SocialPage() {
                     {followed.includes(user.id) ? "Siguiendo" : "Seguir"}
                   </button>
                 </div>
-                <div className="text-xs text-[#6B7280]">{user.email.replace("@example.com", "@uv.es")}</div>
+                <div className="text-xs text-[#6B7280]">{user.email}</div>
                 <div className="text-xs text-primary mt-0.5 font-medium">{user.role === "student" ? "Estudiante" : "Propietario"}</div>
                 <div className="flex items-center gap-2 mt-2">
                   <StarRating rating={user.rating} />
