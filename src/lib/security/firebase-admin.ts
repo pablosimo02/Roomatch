@@ -1,5 +1,6 @@
-import { initializeApp, cert, getApps, App } from "firebase-admin/app";
+import { initializeApp, cert, getApps, type App } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
+import { getAppCheck } from "firebase-admin/app-check";
 
 let app: App;
 
@@ -42,12 +43,12 @@ export async function verifyFirebaseToken(
 }
 
 export async function verifyAppCheckToken(
-  token: string
+  appCheckToken: string
 ): Promise<{ uid: string; verified: boolean } | null> {
   try {
     const admin = getFirebaseAdmin();
-    const appCheck = await getAuth(admin).verifyIdToken(token);
-    return { uid: appCheck.uid, verified: true };
+    const appCheck = await getAppCheck(admin).verifyToken(appCheckToken);
+    return { uid: appCheck.token?.app || "unknown", verified: true };
   } catch {
     return null;
   }
